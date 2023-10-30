@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
     float velocity = 5f;
     bool autoMove = false;
     Vector3 destination;
+
     private void Update()
     {
         if (autoMove)
@@ -35,6 +36,6 @@ public class PlayerManager : MonoBehaviour
     public void movePlayer(Vector3 pos)
     {
         autoMove = true;
-        destination = pos;
+        destination = new Vector3(pos.x, 0, pos.z);
     }   
 }
