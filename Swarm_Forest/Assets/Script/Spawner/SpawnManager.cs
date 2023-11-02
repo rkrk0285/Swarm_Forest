@@ -5,8 +5,9 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     public GameObject Enemy1;
-    public GameObject Plane;
+    public GameObject Terrain;
     public float spawn_Interval = 0.5f;
+    public float map_size = 1000f;
     private float spawn_Timer = 0.0f;
         
     private void Update()
@@ -22,12 +23,13 @@ public class SpawnManager : MonoBehaviour
 
     void SpawnEnemy()
     {        
-        float z = Random.Range(-20, 20);
-        float map_size = Plane.transform.localScale.x * 10;
-        Debug.Log(map_size);
-        Instantiate(Enemy1, new Vector3(map_size / 2 - 3f, 0, z), Quaternion.identity);
-        Instantiate(Enemy1, new Vector3(3f - map_size / 2, 0, z), Quaternion.identity);
-        Instantiate(Enemy1, new Vector3(z, 0, map_size / 2 - 3f), Quaternion.identity);
-        Instantiate(Enemy1, new Vector3(z, 0, 3f - map_size / 2), Quaternion.identity);
+        float z = Random.Range(100, 900);
+
+        float[] dx = new float[4] { map_size - 30f, 30f, z, z };
+        float[] dz = new float[4] { z, z, 30f, map_size - 30f };        
+        for(int i = 0; i < 4; i++)
+        {
+            Instantiate(Enemy1, new Vector3(dx[i], 0, dz[i]), Quaternion.identity);
+        }
     }
 }
