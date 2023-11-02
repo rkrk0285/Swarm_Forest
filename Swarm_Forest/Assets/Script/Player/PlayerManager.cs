@@ -1,19 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AI;
 public class PlayerManager : MonoBehaviour
 {
     public Camera player_Camera;
-    float velocity = 5f;
+    public float velocity = 50f;
     bool autoMove = false;
     Vector3 destination;
+
+    private NavMeshAgent nvAgent;
+
+    private void Start()
+    {
+        nvAgent = GetComponent<NavMeshAgent>();        
+    }
     private void Update()
     {
         if (autoMove)
         {
-            setPlayerDirection(destination);
-        }
+            //setplayerdirection(destination);
+            nvAgent.SetDestination(destination);
+            player_Camera.transform.position = new Vector3(transform.position.x, 100, transform.position.z);
+        }        
     }
 
     public void setPlayerDirection(Vector3 pos)
@@ -29,12 +38,17 @@ public class PlayerManager : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
             transform.LookAt(destination);
         }
-        player_Camera.transform.position = new Vector3(transform.position.x, 10, transform.position.z);
+        player_Camera.transform.position = new Vector3(transform.position.x, 100, transform.position.z);
     }
 
     public void movePlayer(Vector3 pos)
     {
         autoMove = true;
-        destination = pos;
-    }   
+        destination = new Vector3(pos.x, 0, pos.z);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log(collision.gameObject.name);
+    }
 }
