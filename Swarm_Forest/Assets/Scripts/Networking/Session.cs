@@ -5,34 +5,25 @@ using UnityEngine.Assertions;
 
 namespace Domino.Networking.Event{
     public class ConnectivityEventArgs{
-            public bool Connected{get; set;}
-        }
+        public bool Connected{get; set;}
+    }
 
-        public class ReceivedEventArgs{
-            public byte[] Buffer{get;set;}
-        }
+    public class ReceivedEventArgs{
+        public byte[] Buffer{get;set;}
+    }
 
-        public class SentEventArgs{
-            public bool Sent{get;set;}
-        }
+    public class SentEventArgs{
+        public bool Sent{get;set;}
+    }
 
-        public delegate void ConnectivityEventHandler(object sender, ConnectivityEventArgs e);
-        public delegate void ReceiveEventHandler(object sender, ReceivedEventArgs e);
-        public delegate void SendEventHandler(object sender, SentEventArgs e);
+    public delegate void ConnectivityEventHandler(object sender, ConnectivityEventArgs e);
+    public delegate void ReceiveEventHandler(object sender, ReceivedEventArgs e);
+    public delegate void SendEventHandler(object sender, SentEventArgs e);
 }
 
 namespace Domino.Networking.TCP
 {
     public class Session{
-        // Singleton
-        private static Session sharedInstance = null;
-        public static Session SharedInstance{
-            get{
-                sharedInstance ??= new Session();
-                return sharedInstance;
-            }
-        }
-
         private class AsyncState{
             public Socket socket;
         }
@@ -63,10 +54,10 @@ namespace Domino.Networking.TCP
                 return m_socket.Connected;
             }
         }
-        
+
         public void Connect(string host, int port){
             m_socket ??= new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            
+
             m_socket.BeginConnect(host, port, new AsyncCallback(ConnectCallback), new AsyncState{
                 socket = m_socket
             });
@@ -78,7 +69,7 @@ namespace Domino.Networking.TCP
             var sendState = new CommunicationState();
             Array.Copy(bytes, sendState.buffer, bytes.Length);
             sendState.length = bytes.Length;
-            
+
             m_socket.BeginSend(sendState.buffer, 0, sendState.length, SocketFlags.None, new AsyncCallback(SendCallback), sendState);
         }
 
@@ -141,7 +132,7 @@ namespace Domino.Networking.TCP
             var socket = state.socket;
 
             var length = socket.EndSend(ar, out var error);
-            
+
             var sent = error == SocketError.Success && state.length == length;
 
             if(!sent){
@@ -163,6 +154,11 @@ namespace Domino.Networking.TCP
             DisconnectedEvent?.Invoke(this, new Event.ConnectivityEventArgs{
                 Connected = false
             });
+        }
+
+        internal void Send(MatchRegister matchRegister)
+        {
+            throw new NotImplementedException();
         }
     }
 }
