@@ -16,14 +16,14 @@ public class InputManager : MonoBehaviour
 
     void input_Control()
     {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
         // 오른쪽 클릭 입력
         if (Input.GetMouseButton(1))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
+        {            
             if (Physics.Raycast(ray, out hit))
-            {
+            {                
                 Player.GetComponent<PlayerManager>().movePlayer(hit.point);
             }
         }

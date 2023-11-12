@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour
     public Camera player_Camera;    
     bool autoMove = false;
     Vector3 destination;
+    Vector3 offset = new Vector3(0, 0, 36.49635f);
 
     private NavMeshAgent nvAgent;
 
@@ -19,7 +20,7 @@ public class PlayerManager : MonoBehaviour
         if (autoMove)
         {            
             nvAgent.SetDestination(destination);
-            player_Camera.transform.position = new Vector3(transform.position.x, 100, transform.position.z);
+            player_Camera.transform.position = new Vector3(transform.position.x, 100, transform.position.z) - offset;
         }        
     }
     public void movePlayer(Vector3 pos)
