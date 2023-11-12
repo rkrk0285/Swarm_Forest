@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.AI;
 public class PlayerManager : MonoBehaviour
 {
-    public Camera player_Camera;
-    public float velocity = 50f;
+    public Camera player_Camera;    
     bool autoMove = false;
     Vector3 destination;
+    Vector3 offset = new Vector3(0, 0, 36.49635f);
 
     private NavMeshAgent nvAgent;
 
@@ -18,37 +18,14 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         if (autoMove)
-        {
-            //setplayerdirection(destination);
+        {            
             nvAgent.SetDestination(destination);
-            player_Camera.transform.position = new Vector3(transform.position.x, 100, transform.position.z);
+            player_Camera.transform.position = new Vector3(transform.position.x, 100, transform.position.z) - offset;
         }        
     }
-
-    public void setPlayerDirection(Vector3 pos)
-    {
-        Vector3 dir = destination - transform.position;
-        if (dir.magnitude < 0.0001f)
-            autoMove = false;
-        else
-        {
-            float moveDist = Mathf.Clamp(velocity * Time.deltaTime, 0, dir.magnitude);
-            transform.position = transform.position + dir.normalized * moveDist;
-
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
-            transform.LookAt(destination);
-        }
-        player_Camera.transform.position = new Vector3(transform.position.x, 100, transform.position.z);
-    }
-
     public void movePlayer(Vector3 pos)
     {
         autoMove = true;
         destination = new Vector3(pos.x, 0, pos.z);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(collision.gameObject.name);
     }
 }
