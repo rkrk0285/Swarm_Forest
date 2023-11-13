@@ -16,7 +16,7 @@ public class SpawnManager : MonoBehaviour
         
         if (spawn_Timer >= spawn_Interval)
         {
-            SpawnEnemy();
+            //SpawnEnemy();
             spawn_Timer = 0f;
         }
     }

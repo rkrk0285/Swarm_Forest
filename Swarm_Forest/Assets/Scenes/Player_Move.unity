@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1096549297}
   - component: {fileID: 1096549298}
+  - component: {fileID: 1096549299}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -149,7 +150,7 @@ Transform:
   m_GameObject: {fileID: 1096549296}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.4653945, y: -4.487577, z: -8.116551}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -168,6 +169,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 2066896392465667848}
+  GameManager: {fileID: 1096549296}
+--- !u!114 &1096549299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096549296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3954c8465d873ae4094604f262b9b6aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireball_Prefab: {fileID: 5664025068740197008, guid: 71996eac81ce0054bac4eb34d58ea50d, type: 3}
+  Player: {fileID: 2066896392465667848}
+  skillForce: 100
 --- !u!1001 &1344741081
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -182,7 +199,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5080455091878232777, guid: f8fe2e6f352adea4d83befb0970a5193, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 5080455091878232777, guid: f8fe2e6f352adea4d83befb0970a5193, type: 3}
       propertyPath: m_LocalPosition.y
@@ -190,7 +207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5080455091878232777, guid: f8fe2e6f352adea4d83befb0970a5193, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 5080455091878232777, guid: f8fe2e6f352adea4d83befb0970a5193, type: 3}
       propertyPath: m_LocalRotation.w
@@ -342,8 +359,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 50
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -368,7 +385,7 @@ Transform:
   m_GameObject: {fileID: 2039139614}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5735764, y: 0, z: 0, w: 0.8191521}
-  m_LocalPosition: {x: 500, y: 100, z: 463.6}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2521,7 +2538,7 @@ Transform:
   m_GameObject: {fileID: 2066896392465667848}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 500, y: 0, z: 500}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 1
   m_Children:
