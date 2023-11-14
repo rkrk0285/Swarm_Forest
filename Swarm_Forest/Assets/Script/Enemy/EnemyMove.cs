@@ -14,6 +14,6 @@ public class EnemyMove : MonoBehaviour
     private void Update()
     {
         destination = GameObject.Find("Player").transform.position;
-        nvAgent.SetDestination(destination);        
+        nvAgent.SetDestination(destination);
     }
 }

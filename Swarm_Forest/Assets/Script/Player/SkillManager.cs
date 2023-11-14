@@ -12,22 +12,32 @@ public class SkillManager : MonoBehaviour
         GameObject skill = Instantiate(fireball_Prefab, Player.transform.position, Quaternion.identity, gameObject.transform);
         Rigidbody skillRigidbody = skill.GetComponent<Rigidbody>();
 
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // 기울인 카메라 보정.
-        mousePos.z += (Camera.main.transform.position.y / (Mathf.Sin(70 * Mathf.Deg2Rad) / Mathf.Cos(70 * Mathf.Deg2Rad))); 
-        Vector3 dirVec = mousePos - Player.transform.position;
-        
+        Vector3 mousePos = mouseToRay();
+        // 맵 밖을 향할 경우. (임시)
+        if (mousePos == Vector3.zero)
+            return;
 
-        Debug.Log("MouPos " + mousePos);
-        Debug.Log("Player " + Player.transform.position);
-
-        dirVec.y = 0f;        
+        // 기울인 카메라 보정.        
+        Vector3 dirVec = mousePos - Player.transform.position;       
+        dirVec.y = 1f;        
         dirVec = dirVec.normalized;
-        Debug.Log("DirVec " + dirVec);
+        
         if (skillRigidbody != null)
         {
             skillRigidbody.AddForce(dirVec * skillForce, ForceMode.Impulse);
         }
         Destroy(skill, 5f);
+    }
+
+    public Vector3 mouseToRay()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            return hit.point;
+        }
+        return Vector3.zero;
     }
 }
