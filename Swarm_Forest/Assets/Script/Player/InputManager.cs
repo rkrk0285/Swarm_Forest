@@ -8,7 +8,9 @@ public class InputManager : MonoBehaviour
     GameObject Player;
     [SerializeField]
     Plane _plane;
-    
+    [SerializeField]
+    private GameObject GameManager;
+
     void Update()
     {
         input_Control();
@@ -31,6 +33,7 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             Debug.Log("Q ют╥б");
+            GameManager.GetComponent<SkillManager>().cast_Fireball();
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
