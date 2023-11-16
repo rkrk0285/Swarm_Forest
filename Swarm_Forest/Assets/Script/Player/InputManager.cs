@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class InputManager : MonoBehaviour
 {
     [SerializeField]
@@ -21,7 +21,7 @@ public class InputManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        // ¿À¸¥ÂÊ Å¬¸¯ ÀÔ·Â
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ ï¿½Ô·ï¿½
         if (Input.GetMouseButton(1))
         {            
             if (Physics.Raycast(ray, out hit))
@@ -32,20 +32,21 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log("Q ÀÔ·Â");
+            Debug.Log("Q ï¿½Ô·ï¿½");
             GameManager.GetComponent<SkillManager>().cast_Fireball();
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
-            Debug.Log("W ÀÔ·Â");
+            Debug.Log("W ï¿½Ô·ï¿½");
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("E ÀÔ·Â");
+            Debug.Log("E ï¿½Ô·ï¿½");
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Debug.Log("R ÀÔ·Â");
+            Debug.Log("R ï¿½Ô·ï¿½");
         }
     }
 }
+*/

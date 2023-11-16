@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class SkillManager : MonoBehaviour
 {    
     public GameObject fireball_Prefab;
@@ -13,11 +13,11 @@ public class SkillManager : MonoBehaviour
         Rigidbody skillRigidbody = skill.GetComponent<Rigidbody>();
 
         Vector3 mousePos = mouseToRay();
-        // ¸Ê ¹ÛÀ» ÇâÇÒ °æ¿ì. (ÀÓ½Ã)
+        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½. (ï¿½Ó½ï¿½)
         if (mousePos == Vector3.zero)
             return;
 
-        // ±â¿ïÀÎ Ä«¸Þ¶ó º¸Á¤.        
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½.        
         Vector3 dirVec = mousePos - Player.transform.position;       
         dirVec.y = 1f;        
         dirVec = dirVec.normalized;
@@ -41,3 +41,4 @@ public class SkillManager : MonoBehaviour
         return Vector3.zero;
     }
 }
+*/
