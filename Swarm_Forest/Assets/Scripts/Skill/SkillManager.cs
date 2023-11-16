@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public partial class SkillManager: MonoBehaviour{ 
+public class SkillManager: MonoBehaviour{ 
     void Start(){
         ResetLastCastedTimes();
     }
@@ -19,7 +19,7 @@ public partial class SkillManager: MonoBehaviour{
             InstantiateEffect(caster.transform.position, skill);
         
         if(skill is ProjectileSkill projectileSkill){
-            projectileSkill.Action(effect, direction, skill.Force);
+            projectileSkill.Action(effect, direction, projectileSkill.Force);
         }
         if(skill is PressingSkill pressingSkill){
             pressingSkill.Action(effect, direction);
