@@ -8,40 +8,24 @@ using Unity.VisualScripting;
 
 public class MatchingMakingManager : MonoBehaviour
 {
-    private static MatchingMakingManager sharedInstance = null;
-    public static MatchingMakingManager SharedInstance{
-        get{
-            return sharedInstance;
-        }
-    }
-
-    private void Awake(){
-        sharedInstance = this;
-    }
-
-    private Session Session{get;set;}
+    private Session Session{get;set;} = null;
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         if(Session != null){
-            Session.Disconnect();
-            Session = null;
+            this.Session.Disconnect();
+            Session = new Session();
         }
         
         var ip = ""; // GlobalSetting.RemoteIP;
         var port = 1234; // GlobalSetting.RemotePort;
 
-        Session = Session.SharedInstance;
 
         Session.ConnectedEvent += OnConnect;
         Session.ReceivedEvent += OnReceive;
         Session.DisconnectedEvent += OnDisconnected;
 
         Session.Connect(ip, port);
-    }
-
-    public void Send(byte[] bytes){
-        Session.Send(bytes);
     }
 
     private void OnConnect(object sender, ConnectivityEventArgs e){
@@ -52,42 +36,32 @@ public class MatchingMakingManager : MonoBehaviour
         }
         // Send register sign to matchmaking server 
         // Send(Coder.Encode(MatchRegister.Factory.Create()));
+        Session.Send(Coder.Encode(MatchRegister.Factory.Create()));
     }
 
     private void OnReceive(object sender, ReceivedEventArgs e){
         var packetID = Coder.Decode<PacketBase>(e.Buffer).PacketID;
 
-        // TODO: 
-        // 1. create event for each case 
-        // 2. deserialize byte array (e.Buffer) and invoke event with deserialized object
-        switch(packetID){
-            case PacketID.MatchCreated:{
-
-            }
-            break;
-            case PacketID.MoveObject:{
-
-            }
-            break;
-            case PacketID.InstantiateObject:{
-
-            }
-            break;
-            case PacketID.UpdateObjectStatus:{
-
-            }
-            break;
-            case PacketID.EliteSpawnTimer:{
-
-            }
-            break;
+        if(packetID != PacketID.MatchCreated){
+            return;
         }
+
+        var packet = Coder.Decode<MatchCreated>(e.Buffer);
+
+        var RoomID = packet.RoomID;
+
+        // TODO: change scene here (game scene, pass room id)
+
+
+
+        // After change scene
+        Session.Disconnect();
     }
 
     private void OnDisconnected(object sender, ConnectivityEventArgs e){
         // if this function called while game is running (except close application)
         // it means client disconnected from remote (server)
-
+        Debug.Log("Matchmaking Server Disconnected");
     }
 
     // UNNECESSARY 
