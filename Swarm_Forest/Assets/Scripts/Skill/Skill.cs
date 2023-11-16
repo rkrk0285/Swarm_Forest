@@ -4,25 +4,30 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class Skill: MonoBehaviour{
-    public GameObject EffectPrefab{get;set;} = null;
+    public string EffectPrefabPath{get;set;}
+    public GameObject EffectPrefab{get;set;}
     public int ID{get;set;}
     public float BaseDamage{get;set;}
     public float PercentDamage{get;set;}
     public float LifeTime{get;set;}
     public float Cooldown{get;set;}
-    public float Force{get;set;}
     public Action Action{get;set;}
-    public Action<Collider> TriggerEntered{get;set;}
+    public Action<GameObject, Collider> TriggerEntered{get;set;}
 
+    void Awake(){
+        EffectPrefab = Resources.Load<GameObject>(EffectPrefabPath);
+    }
 
     private void OnTriggerEnter(Collider other){
         Debug.Log(other.gameObject.tag);
 
-        TriggerEntered?.Invoke(other);
+        TriggerEntered?.Invoke(gameObject, other);
     }
 }
 
 public class ProjectileSkill: Skill{
+
+    public float Force{get;set;}
     public new Action<GameObject, Vector3, float> Action{get;set;}
 }
 
