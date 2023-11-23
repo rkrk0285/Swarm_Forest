@@ -85,15 +85,15 @@ public class InputManager : MonoBehaviour
 
     void KeyFunction(KeyCode keyCode){
         var caster = Player.GetComponent<ICharacter>();
-        var skill = caster.Skills[keyCode];
+        var skillObject = caster.Skills[keyCode];
         
-        if(skill == null) return;
+        if(skillObject == null) return;
 
         var mousePositionOnMap = NormalizeRayPoint(MousePositionOnMap());
 
         GameManager.GetComponent<SkillManager>().Cast(
             caster,
-            skill, 
+            skillObject, 
             mousePositionOnMap
         );
     }

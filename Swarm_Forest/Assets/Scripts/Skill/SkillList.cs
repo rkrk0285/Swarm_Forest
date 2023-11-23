@@ -11,9 +11,10 @@ partial class SkillList{
     }
 
     private SkillList(){
-        AllSkills = new Dictionary<int, Skill>
+        AllSkills = new Dictionary<int, string>
         {
             // 0
+            /*
             {
                 0,
                 new ProjectileSkill
@@ -33,15 +34,19 @@ partial class SkillList{
                         UnityEngine.Object.Destroy(GameObject);
                     }
                 }
+                
             },
+            */
             // 1
-            
+            {0, "Assets/Prefab/FireBall"},
         };
 
     }
-    public Skill Get(int ID){
-        return AllSkills[ID];
+    public static GameObject Get(int ID){
+        if(!AllSkills.ContainsKey(ID)) 
+            throw new KeyNotFoundException($"There is no skill have ID: {ID}");
+        return Resources.Load<GameObject>(AllSkills[ID]);
     }
 
-    private static Dictionary<int, Skill> AllSkills;
+    private static Dictionary<int, string> AllSkills;
 }

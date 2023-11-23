@@ -11,19 +11,14 @@ public class SkillManager: MonoBehaviour{
     // <ID, Last Cast Time>
     private Dictionary<int, float> LastCastedTimes;
 
-    public void Cast(ICharacter caster, Skill skill, Vector3 direction){
+    public void Cast(ICharacter caster, GameObject skillObject, Vector3 direction){
+        if(!skillObject.TryGetComponent<Skill>(out var skill)) return;
         if(!CanCastSkill(skill)) return;
-        if(skill is PassiveSkill) return;
 
         var effect =  
-            InstantiateEffect(caster.transform.position, skill);
+            InstantiateEffect(skillObject, caster.transform.position);
         
-        if(skill is ProjectileSkill projectileSkill){
-            projectileSkill.Action(effect, direction, projectileSkill.Force);
-        }
-        if(skill is PressingSkill pressingSkill){
-            pressingSkill.Action(effect, direction);
-        }
+        skill.Activate(direction);
         
         Destroy(effect, skill.LifeTime);
     }
@@ -48,9 +43,9 @@ public class SkillManager: MonoBehaviour{
         return true;
     }
 
-    private GameObject InstantiateEffect(Vector3 origin, Skill skill){
-        return UnityEngine.Object.Instantiate(
-                skill.EffectPrefab, 
+    private GameObject InstantiateEffect(GameObject skillObject, Vector3 origin){
+        return Instantiate(
+                skillObject, 
                 origin, 
                 Quaternion.identity,
                 gameObject.transform
