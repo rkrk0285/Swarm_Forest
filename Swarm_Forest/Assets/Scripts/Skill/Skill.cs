@@ -1,18 +1,21 @@
 using System;
 using Domino.Networking.TCP;
 using Unity.VisualScripting;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
 public class Skill: MonoBehaviour{
-    public int ID{get;set;}
-    public float BaseDamage{get;set;}
-    public float PercentDamage{get;set;}
-    public float LifeTime{get;set;}
-    public float Cooldown{get;set;}
-    public Action Action{get;set;}
+    
+    public int ID;
+    public float BaseDamage;
+    public float PercentDamage;    
+    public float LifeTime;
+    public float Cooldown;
+    public Action Action;
 
-    public void Activate(Vector3 direction){
+    public virtual void Activate(GameObject Effect, Vector3 direction)
+    {
         // DO NOTHING
         // Override this function when inherrit this class to child class
-    }
+    }     
 }

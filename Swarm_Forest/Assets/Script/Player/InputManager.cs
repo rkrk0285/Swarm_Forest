@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/*
+
 public class InputManager : MonoBehaviour
 {
     [SerializeField]
@@ -10,6 +10,14 @@ public class InputManager : MonoBehaviour
     Plane _plane;
     [SerializeField]
     private GameObject GameManager;
+
+    //임시
+    private ICharacter Player_ICharacter;
+    private void Start()
+    {
+        Player_ICharacter = Player.GetComponent<ICharacter>();        
+    }
+    //
 
     void Update()
     {
@@ -20,8 +28,7 @@ public class InputManager : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-
-        // ������ Ŭ�� �Է�
+         
         if (Input.GetMouseButton(1))
         {            
             if (Physics.Raycast(ray, out hit))
@@ -33,11 +40,14 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             Debug.Log("Q �Է�");
-            GameManager.GetComponent<SkillManager>().cast_Fireball();
+            Player_ICharacter.AddSkill(KeyCode.Q, 0);
+            GameManager.GetComponent<SkillManager>().Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.Q], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
             Debug.Log("W �Է�");
+            Player_ICharacter.AddSkill(KeyCode.W, 1);
+            GameManager.GetComponent<SkillManager>().Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.W], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -48,5 +58,28 @@ public class InputManager : MonoBehaviour
             Debug.Log("R �Է�");
         }
     }
+
+    #region Raycasting
+    // Adjust Ray point
+    private Vector3 NormalizeRayPoint(Vector3 rayPoint)
+    {
+        var direction = rayPoint - Player.transform.position;
+        direction.y = 1f;
+        direction = direction.normalized;
+
+        return direction;
+    }
+
+    private Vector3 MousePositionOnMap()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out var raycastHit))
+        {
+            return raycastHit.point;
+        }
+
+        return Vector3.zero;
+    }
+    #endregion
 }
-*/

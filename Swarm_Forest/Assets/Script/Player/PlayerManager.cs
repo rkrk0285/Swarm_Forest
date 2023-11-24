@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : ICharacter
 {
     public Camera player_Camera;    
     bool autoMove = false;

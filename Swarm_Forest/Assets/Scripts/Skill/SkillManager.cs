@@ -5,21 +5,22 @@ using UnityEngine;
 
 public class SkillManager: MonoBehaviour{ 
     void Start(){
-        ResetLastCastedTimes();
+        ResetLastCastedTimes();        
     }
 
     // <ID, Last Cast Time>
     private Dictionary<int, float> LastCastedTimes;
 
-    public void Cast(ICharacter caster, GameObject skillObject, Vector3 direction){
-        if(!skillObject.TryGetComponent<Skill>(out var skill)) return;
-        if(!CanCastSkill(skill)) return;
+    public void Cast(ICharacter caster, int skillNum, Vector3 direction)
+    {
+        GameObject skillObject = SkillList.Get(skillNum);
+        if (!skillObject.TryGetComponent<Skill>(out var skill)) return;
+        if (!CanCastSkill(skill)) return;
 
-        var effect =  
-            InstantiateEffect(skillObject, caster.transform.position);
-        
-        skill.Activate(direction);
-        
+        var effect = InstantiateEffect(skillObject, caster.transform.position);
+
+        skill.Activate(effect, direction);
+
         Destroy(effect, skill.LifeTime);
     }
 
