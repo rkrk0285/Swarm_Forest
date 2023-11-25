@@ -7,9 +7,7 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     GameObject Player;
     [SerializeField]
-    Plane _plane;
-    [SerializeField]
-    private GameObject GameManager;
+    Plane _plane;    
 
     //임시
     private ICharacter Player_ICharacter;
@@ -41,21 +39,25 @@ public class InputManager : MonoBehaviour
         {
             Debug.Log("Q �Է�");
             Player_ICharacter.AddSkill(KeyCode.Q, 0);
-            GameManager.GetComponent<SkillManager>().Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.Q], NormalizeRayPoint(MousePositionOnMap()));
+            GameManager.instance.skillManager.Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.Q], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
             Debug.Log("W �Է�");
             Player_ICharacter.AddSkill(KeyCode.W, 1);
-            GameManager.GetComponent<SkillManager>().Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.W], NormalizeRayPoint(MousePositionOnMap()));
+            GameManager.instance.skillManager.Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.W], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
             Debug.Log("E �Է�");
+            Player_ICharacter.AddSkill(KeyCode.E, 2);
+            GameManager.instance.skillManager.Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.E], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
             Debug.Log("R �Է�");
+            Player_ICharacter.AddSkill(KeyCode.R, 3);
+            GameManager.instance.skillManager.Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.R], NormalizeRayPoint(MousePositionOnMap()));
         }
     }
 

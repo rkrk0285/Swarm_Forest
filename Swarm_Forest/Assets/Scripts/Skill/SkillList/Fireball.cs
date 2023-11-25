@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class Fireball : Skill
 {    
-    public override void Activate(GameObject Effect, Vector3 direction)
+    public override void Activate(ICharacter caster, GameObject Effect, Vector3 direction)
     {
-        // DO NOTHING
-        // Override this function when inherrit this class to child class
-        Effect.GetComponent<Rigidbody>().AddForce(direction * 100f, ForceMode.Impulse);
+        var effect = InstantiateEffect(Effect, caster.transform.position);
+        effect.GetComponent<Rigidbody>().AddForce(direction * 100f, ForceMode.Impulse);
+        
+        Destroy(effect, LifeTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -21,5 +22,5 @@ public class Fireball : Skill
             //
             Destroy(this.gameObject);
         }
-    }
+    }    
 }

@@ -12,16 +12,13 @@ public class SkillManager: MonoBehaviour{
     private Dictionary<int, float> LastCastedTimes;
 
     public void Cast(ICharacter caster, int skillNum, Vector3 direction)
-    {
-        GameObject skillObject = SkillList.Get(skillNum);
-        if (!skillObject.TryGetComponent<Skill>(out var skill)) return;
+    {        
+        GameObject skillObject = SkillList.Get(skillNum);   
+        
+        if (!skillObject.TryGetComponent<Skill>(out var skill)) return;        
         if (!CanCastSkill(skill)) return;
-
-        var effect = InstantiateEffect(skillObject, caster.transform.position);
-
-        skill.Activate(effect, direction);
-
-        Destroy(effect, skill.LifeTime);
+           
+        skill.Activate(caster, skillObject, direction);
     }
 
     private bool CanCastSkill(Skill skill){

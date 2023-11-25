@@ -24,6 +24,8 @@ partial class SkillList{
 
     private static Dictionary<int, string> AllSkills = new Dictionary<int, string>{
             {0, "SkillPrefab/FireBall"},
-            {1, "SkillPrefab/NinjaStar"},
+            {1, "SkillPrefab/ThrowingStar"},
+            {2, "SkillPrefab/StickyBomb"},
+            {3, "SkillPrefab/HyperBeam"},
         };
 }

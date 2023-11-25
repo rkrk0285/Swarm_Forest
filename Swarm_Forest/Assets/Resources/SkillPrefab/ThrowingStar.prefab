@@ -4765,9 +4765,9 @@ GameObject:
   - component: {fileID: 5317592415229736707}
   - component: {fileID: 7760596506320453896}
   - component: {fileID: 4294901157742132507}
-  - component: {fileID: 5413542140514463835}
+  - component: {fileID: 5923174143242628142}
   m_Layer: 0
-  m_Name: NinjaStar
+  m_Name: ThrowingStar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9646,7 +9646,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.7369504, y: 2.8491952, z: 2.6194055}
   m_Center: {x: 0.100203134, y: 0.060037185, z: 0.06002245}
---- !u!114 &5413542140514463835
+--- !u!114 &5923174143242628142
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9655,11 +9655,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5664025068740197008}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6c49db327a8fad4dba1087852fa73e6, type: 3}
+  m_Script: {fileID: 11500000, guid: bfdbe18b554ec434f876623dbd8e0e4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 1
   BaseDamage: 10
   PercentDamage: 1.15
-  LifeTime: 3
-  Cooldown: 5
+  LifeTime: 5
+  Cooldown: 3
