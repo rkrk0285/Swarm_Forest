@@ -14,31 +14,35 @@ public abstract class ICharacter: MonoBehaviour{
 
     public float MovementVelocity{get; set;}
 
-    public Dictionary<KeyCode, GameObject> Skills;
+    public Dictionary<KeyCode, int> Skills = new Dictionary<KeyCode, int>{
+            {KeyCode.Q, -1},
+            {KeyCode.W, -1},
+            {KeyCode.E, -1},
+            {KeyCode.R, -1}
+        };
 
-    public void AddSkill(KeyCode keyCode, int ID){
+    public void AddSkill(KeyCode keyCode, int ID){        
         if(!Skills.ContainsKey(keyCode))
             throw new KeyNotFoundException($"Invalid KeyCode value: {keyCode}");
 
-        var skillObject = SkillList.Get(ID);
-        Skills[keyCode] = skillObject;
+        //var skillObject = SkillList.Get(ID);
+        Skills[keyCode] = ID;
     }
     
     public void RemoveSkill(KeyCode keyCode){
         if(!Skills.ContainsKey(keyCode))
             throw new KeyNotFoundException($"Invalid KeyCode value: {keyCode}");
 
-        Skills[keyCode] = null;
+        Skills[keyCode] = -1;
+    }
+
+    protected void DieCharacter()
+    {
+        Destroy(this.gameObject);
     }
 
     private event Action<int> PassiveSkillEffect;
 
-    void Start(){
-        Skills = new Dictionary<KeyCode, GameObject>{
-            {KeyCode.Q, null},
-            {KeyCode.W, null},
-            {KeyCode.E, null},
-            {KeyCode.R, null}
-        };
+    void Start(){                       
     }
 }
