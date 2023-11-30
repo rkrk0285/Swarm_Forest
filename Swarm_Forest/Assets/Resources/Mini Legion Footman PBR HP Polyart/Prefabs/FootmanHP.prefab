@@ -971,3 +971,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab: {fileID: 100048}
+  Ani: {fileID: 9500000}

@@ -18,9 +18,8 @@ public class Fireball : Skill
         if (other.gameObject.tag == "Enemy")
         {
             // 데미지 계산하는 곳.
-            other.gameObject.GetComponent<IEnemy>().Damaged(BaseDamage, ID);
-            //
-            Destroy(this.gameObject);
+            if (other.gameObject.GetComponent<ICharacter>().Damaged(BaseDamage, ID))
+                Destroy(this.gameObject);
         }
     }    
 }

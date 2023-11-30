@@ -20,7 +20,7 @@ public class HyperBeam : Skill
         if (other.gameObject.tag == "Enemy")
         {
             // 데미지 계산하는 곳.                        
-            other.gameObject.GetComponent<IEnemy>().Damaged(BaseDamage, ID);
+            other.gameObject.GetComponent<ICharacter>().Damaged(BaseDamage, ID);
         }
     }
 
