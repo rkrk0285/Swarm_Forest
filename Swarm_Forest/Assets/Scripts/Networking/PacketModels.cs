@@ -11,7 +11,8 @@ using UnityEngine;
 namespace Domino.Networking.TCP
 {
     [Serializable]
-    public enum PacketID: int{
+    public enum PacketID : int
+    {
         Invalid = 0,
         MatchRegister,
         MatchCancel,
@@ -20,6 +21,8 @@ namespace Domino.Networking.TCP
         MoveObject,
         CastSkill,
         ObjectDead,
+        ObjectIDReq,
+        ObjectIDRes,
         InstantiateObject,
         UpdateObjectStatus,
         EliteSpawnTimer,
@@ -27,59 +30,75 @@ namespace Domino.Networking.TCP
     }
 
     [Serializable]
-    public class PacketBase{
-        public PacketID PacketID{get; protected set;}
+    public class PacketBase
+    {
+        public PacketID PacketID { get; protected set; }
     }
 
 
     [Serializable]
-    public class MatchCreated: PacketBase{
-        public int RoomID{get; protected set;}
+    public class MatchCreated : PacketBase
+    {
+        public int RoomID { get; protected set; }
 
-        private MatchCreated(){
+        private MatchCreated()
+        {
             // PacketID = PacketID.MatchCreated;
         }
     }
 
 
     [Serializable]
-    public class MatchRegister: PacketBase{
+    public class MatchRegister : PacketBase
+    {
 
-        private MatchRegister(){
+        private MatchRegister()
+        {
             PacketID = PacketID.MatchRegister;
         }
 
-        public class Factory{
-            public static MatchRegister Create(){
+        public class Factory
+        {
+            public static MatchRegister Create()
+            {
                 return new MatchRegister();
             }
         }
     }
 
     [Serializable]
-    public class MatchCancel: PacketBase{
+    public class MatchCancel : PacketBase
+    {
 
-        private MatchCancel(){
+        private MatchCancel()
+        {
             PacketID = PacketID.MatchCancel;
         }
 
-        public class Factory{
-            public static MatchCancel Create(){
+        public class Factory
+        {
+            public static MatchCancel Create()
+            {
                 return new MatchCancel();
             }
         }
     }
 
     [Serializable]
-    public class MatchJoin: PacketBase{
-        public int RoomID{get; protected set;}
+    public class MatchJoin : PacketBase
+    {
+        public int RoomID { get; protected set; }
 
-        private MatchJoin(){
+        private MatchJoin()
+        {
             PacketID = PacketID.MatchJoin;
         }
-        public class Factory{
-            public static MatchJoin Create(int RoomID){
-                return new MatchJoin{
+        public class Factory
+        {
+            public static MatchJoin Create(int RoomID)
+            {
+                return new MatchJoin
+                {
                     RoomID = RoomID
                 };
             }
@@ -87,16 +106,21 @@ namespace Domino.Networking.TCP
     }
 
     [Serializable]
-    public class MoveObject: PacketBase{
-        public int ObjectID{get; protected set;}
-        public Vector3 Position{get; protected set;}
+    public class MoveObject : PacketBase
+    {
+        public int ObjectID { get; protected set; }
+        public Vector3 Position { get; protected set; }
 
-        private MoveObject(){
+        private MoveObject()
+        {
             PacketID = PacketID.MoveObject;
         }
-        public class Factory{
-            public static MoveObject Create(int ObjectID, Vector3 Position){
-                return new MoveObject{
+        public class Factory
+        {
+            public static MoveObject Create(int ObjectID, Vector3 Position)
+            {
+                return new MoveObject
+                {
                     ObjectID = ObjectID,
                     Position = Position
                 };
@@ -105,17 +129,22 @@ namespace Domino.Networking.TCP
     }
 
     [Serializable]
-    public class CastSkill: PacketBase{
-        public int ObjectID{get; protected set;}
-        public Vector3 Direction{get; protected set;}
-        public int SkillID{get; protected set;}
+    public class CastSkill : PacketBase
+    {
+        public int ObjectID { get; protected set; }
+        public Vector3 Direction { get; protected set; }
+        public int SkillID { get; protected set; }
 
-        private CastSkill(){
+        private CastSkill()
+        {
             PacketID = PacketID.CastSkill;
         }
-        public class Factory{
-            public static CastSkill Create(int ObjectID, Vector3 Direction, int SkillID){
-                return new CastSkill{
+        public class Factory
+        {
+            public static CastSkill Create(int ObjectID, Vector3 Direction, int SkillID)
+            {
+                return new CastSkill
+                {
                     ObjectID = ObjectID,
                     Direction = Direction,
                     SkillID = SkillID
@@ -125,15 +154,20 @@ namespace Domino.Networking.TCP
     }
 
     [Serializable]
-    public class ObjectDead: PacketBase{
-        public int ObjectID{get; protected set;}
+    public class ObjectDead : PacketBase
+    {
+        public int ObjectID { get; protected set; }
 
-        private ObjectDead(){
+        private ObjectDead()
+        {
             PacketID = PacketID.ObjectDead;
         }
-        public class Factory{
-            public static ObjectDead Create(int ObjectID){
-                return new ObjectDead{
+        public class Factory
+        {
+            public static ObjectDead Create(int ObjectID)
+            {
+                return new ObjectDead
+                {
                     ObjectID = ObjectID
                 };
             }
@@ -141,33 +175,119 @@ namespace Domino.Networking.TCP
     }
 
     [Serializable]
-    public class InstantiateObject: PacketBase{
-        public int ObjectID{get; protected set;}
-        public Vector3 Position{get; protected set;}
+    public class ObjectIDReq : PacketBase
+    {
+        private ObjectIDReq()
+        {
+            PacketID = PacketID.ObjectIDReq;
+        }
 
-        private InstantiateObject(){
+        public class Factory
+        {
+            public static ObjectIDReq Create()
+            {
+                return new ObjectIDReq();
+            }
+        }
+    }
+
+    [Serializable]
+    public class ObjectIDRes : PacketBase
+    {
+        public int ObjectID { get; protected set; }
+
+        private ObjectIDRes()
+        {
+            PacketID = PacketID.ObjectIDRes;
+        }
+
+        public class Factory
+        {
+            public static ObjectIDRes Create(int ObjectID)
+            {
+                return new ObjectIDRes()
+                {
+                    ObjectID = ObjectID
+                };
+            }
+        }
+    }
+
+
+    [Serializable]
+    public class InstantiateObject : PacketBase
+    {
+        public int ObjectID { get; protected set; }
+        public int ObjectType { get; protected set; }
+        public int HP { get; protected set; }
+        public Vector3 Position { get; protected set; }
+
+        private InstantiateObject()
+        {
             PacketID = PacketID.InstantiateObject;
         }
-    }
 
-    [Serializable]
-    public class UpdateObjectStatus: PacketBase{
-        public int ObjectID{get; protected set;}
-        public int Level{get; protected set;}
-        public int HP{get; protected set;}
-
-        private UpdateObjectStatus(){
-            PacketID = PacketID.UpdateObjectStatus;
+        public class Factory
+        {
+            public static InstantiateObject Create(int ObjectID, int ObjectType, int HP, Vector3 Position)
+            {
+                return new InstantiateObject()
+                {
+                    ObjectID = ObjectID,
+                    ObjectType = ObjectType,
+                    HP = HP,
+                    Position = Position
+                };
+            }
         }
     }
 
     [Serializable]
-    public class EliteMonsterTimer: PacketBase{
-        public int ObjectID{get; private set;}
-        public int Remains{get; private set;}
+    public class UpdateObjectStatus : PacketBase
+    {
+        public int ObjectID { get; protected set; }
+        //public int Level { get; protected set; }
+        public int HP { get; protected set; }
 
-        private EliteMonsterTimer(){
+        private UpdateObjectStatus()
+        {
+            PacketID = PacketID.UpdateObjectStatus;
+        }
+
+        public class Factory
+        {
+            public static UpdateObjectStatus Create(int ObjectID, int HP)
+            {
+                return new UpdateObjectStatus()
+                {
+                    ObjectID = ObjectID,
+                    HP = HP
+                };
+            }
+        }
+    }
+
+    [Serializable]
+    public class EliteMonsterTimer : PacketBase
+    {
+        public int ObjectType { get; private set; }
+        public double Remains { get; private set; }
+
+        private EliteMonsterTimer()
+        {
             PacketID = PacketID.EliteSpawnTimer;
+        }
+
+        public class Factory
+        {
+            public static EliteMonsterTimer Create(int ObjectType, double Remains)
+            {
+                return new EliteMonsterTimer()
+                {
+                    ObjectType = ObjectType,
+                    Remains = Remains
+                };
+            }
         }
     }
 }
@@ -180,27 +300,34 @@ namespace Domino.Networking.TCP
 
 namespace Domino.Networking.HTTP
 {
-    public enum HTTPMethod{
+    public enum HTTPMethod
+    {
         GET,
         POST
     }
-    public abstract class HTTPRequest{
-        public string Router{get; protected set;}
-        public HTTPMethod Method{get; protected set;}
+    public abstract class HTTPRequest
+    {
+        public string Router { get; protected set; }
+        public HTTPMethod Method { get; protected set; }
     }
 
     [Serializable]
-    public class AuthenticationRequest: HTTPRequest{
-        public string Username{get; protected set;}
-        public string Password{get; protected set;}
+    public class AuthenticationRequest : HTTPRequest
+    {
+        public string Username { get; protected set; }
+        public string Password { get; protected set; }
 
-        private AuthenticationRequest(){
+        private AuthenticationRequest()
+        {
             Router = "login";
             Method = HTTPMethod.POST;
         }
-        public class Factory{
-            public static AuthenticationRequest Create(string Username, string Password){
-                return new AuthenticationRequest{
+        public class Factory
+        {
+            public static AuthenticationRequest Create(string Username, string Password)
+            {
+                return new AuthenticationRequest
+                {
                     Username = Username,
                     Password = Password
                 };
@@ -209,33 +336,40 @@ namespace Domino.Networking.HTTP
     }
 
     [Serializable]
-    public class AuthenticationResponse{
-        public string UserID{get;protected set;}
-        public string SessionID{get;protected set;}
+    public class AuthenticationResponse
+    {
+        public string UserID { get; protected set; }
+        public string SessionID { get; protected set; }
 
-        private AuthenticationResponse(){}
+        
     }
 
     [Serializable]
-    public class RankData{
-        public int Rank{get;protected set;}
-        public string Username{get;protected set;}
-        public int Rating{get;protected set;}
+    public class RankData
+    {
+        public int Rank { get; protected set; }
+        public string Username { get; protected set; }
+        public int Rating { get; protected set; }
     }
 
     [Serializable]
-    public class RankRequest: HTTPRequest{
-        public int From{get;protected set;}
-        public int To{get;protected set;}
+    public class RankRequest : HTTPRequest
+    {
+        public int From { get; protected set; }
+        public int To { get; protected set; }
 
-        private RankRequest(){
+        private RankRequest()
+        {
             Router = "ranking";
             Method = HTTPMethod.GET;
         }
 
-        public class Factory{
-            public static RankRequest Create(int From, int To){
-                return new RankRequest{
+        public class Factory
+        {
+            public static RankRequest Create(int From, int To)
+            {
+                return new RankRequest
+                {
                     From = From,
                     To = To
                 };
@@ -244,9 +378,10 @@ namespace Domino.Networking.HTTP
     }
 
     [Serializable]
-    public class RankResponse{
-        public RankData[] RankDatas{get; protected set;}
+    public class RankResponse
+    {
+        public RankData[] RankDatas { get; protected set; }
 
-        private RankResponse(){}
+        private RankResponse() { }
     }
 }
