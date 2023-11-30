@@ -37,8 +37,7 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log("Q �Է�");
-            Player_ICharacter.AddSkill(KeyCode.Q, 0);
+            Debug.Log("Q �Է�");            
             GameManager.instance.skillManager.Cast(Player_ICharacter, Player_ICharacter.Skills[KeyCode.Q], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.W))
@@ -84,4 +83,10 @@ public class InputManager : MonoBehaviour
         return Vector3.zero;
     }
     #endregion
+
+    // 임시
+    public void add_Skill(int num)
+    {
+        Player_ICharacter.AddSkill(KeyCode.Q, num);
+    }
 }

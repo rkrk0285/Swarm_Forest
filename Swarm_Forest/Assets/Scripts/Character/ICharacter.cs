@@ -36,6 +36,11 @@ public abstract class ICharacter: MonoBehaviour{
         Skills[keyCode] = -1;
     }
 
+    protected void DieCharacter()
+    {
+        Destroy(this.gameObject);
+    }
+
     private event Action<int> PassiveSkillEffect;
 
     void Start(){                       

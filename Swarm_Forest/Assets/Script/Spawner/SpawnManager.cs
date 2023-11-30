@@ -4,22 +4,26 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject Enemy1;
-    public GameObject Terrain;
+    public GameObject Enemy1;    
     public float spawn_Interval = 2f;
     public float map_size;
-    private float spawn_Timer = 0.0f;    
+    private float spawn_Timer = 0.0f;
 
-    private void Update()
+    private void Start()
     {
-        spawn_Timer += Time.deltaTime;
-        
-        if (spawn_Timer >= spawn_Interval)
-        {
-            SpawnEnemy();
-            spawn_Timer = 0f;
-        }
+        SpawnEnemy();
     }
+
+    //private void Update()
+    //{
+    //    spawn_Timer += Time.deltaTime;
+        
+    //    if (spawn_Timer >= spawn_Interval)
+    //    {
+    //        SpawnEnemy();
+    //        spawn_Timer = 0f;
+    //    }
+    //}
 
     void SpawnEnemy()
     {        

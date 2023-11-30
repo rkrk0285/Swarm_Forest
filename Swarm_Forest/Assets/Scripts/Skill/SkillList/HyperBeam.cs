@@ -15,21 +15,19 @@ public class HyperBeam : Skill
         Destroy(effect, LifeTime);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("에너미");
+    private void OnTriggerStay(Collider other)
+    {        
         if (other.gameObject.tag == "Enemy")
         {
-            // 데미지 계산하는 곳.
-            Debug.Log("에너미");
-            //
-            Destroy(this.gameObject);
+            // 데미지 계산하는 곳.                        
+            other.gameObject.GetComponent<IEnemy>().Damaged(BaseDamage, ID);
         }
     }
 
     private void ChangeSkillPosition()
     {
-        this.gameObject.transform.position = GameManager.instance.playerManager.Prefab.transform.position;
-        this.gameObject.transform.rotation = GameManager.instance.playerManager.Prefab.transform.rotation;
+        Transform player_transform = GameManager.instance.playerManager.Prefab.transform;
+        this.gameObject.transform.position = new Vector3 (player_transform.position.x, 5f, player_transform.position.z);        
+        this.gameObject.transform.rotation = player_transform.rotation;
     }
 }

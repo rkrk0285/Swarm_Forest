@@ -29,15 +29,12 @@ public class SkillManager: MonoBehaviour{
         var currentTime = Time.time;
         var lastCastedTime = LastCastedTimes[skill.ID];
 
-        if(
-            lastCastedTime != -1 && 
-            currentTime - lastCastedTime < skill.Cooldown
-        ){
+        if(lastCastedTime != -1 && currentTime - lastCastedTime < skill.Cooldown)
+        {
             return false;
         }
 
         LastCastedTimes[skill.ID] = currentTime;
-
         return true;
     }
 
