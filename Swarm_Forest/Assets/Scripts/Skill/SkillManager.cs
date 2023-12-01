@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SkillManager: MonoBehaviour{ 
+public class SkillManager: MonoBehaviour{    
     void Start(){
         ResetLastCastedTimes();        
     }
 
     // <ID, Last Cast Time>
-    private Dictionary<int, float> LastCastedTimes;
-
+    private Dictionary<int, float> LastCastedTimes;    
     public void Cast(ICharacter caster, int skillNum, Vector3 direction)
     {        
         GameObject skillObject = SkillList.Get(skillNum);   

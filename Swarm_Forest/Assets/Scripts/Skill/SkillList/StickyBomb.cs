@@ -17,11 +17,8 @@ public class StickyBomb : Skill
         if (other.gameObject.tag == "Enemy")
         {
             // 데미지 계산하는 곳.
-
-            //
-
-            // 부착이 동작해야함.
-            Destroy(this.gameObject);
+            if (other.gameObject.GetComponent<ICharacter>().Damaged(BaseDamage, ID))
+                Destroy(this.gameObject);
         }
     }
 }
