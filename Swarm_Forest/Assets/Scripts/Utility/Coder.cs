@@ -1,31 +1,29 @@
-using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+// using System;
+// using System.IO;
+// using System.Text;
+// using System.Text.Json;
 
-public class Coder{
-    public static T Decode<T>(byte[] bytes)where T: class{
-        if(bytes is null){
-            throw new ArgumentNullException();
-        }
-           
-        var bf = new BinaryFormatter();
-        using var ms = new MemoryStream(bytes);
-        object obj = bf.Deserialize(ms);
+// public class Coder
+// {
+//     public static T Decode<T>(byte[] bytes) where T : class
+//     {
+//         if (bytes is null)
+//         {
+//             throw new ArgumentNullException();
+//         }
+        
+//         T deserialized = JsonSerializer.Deserialize<T>(Encoding.UTF8.GetString(bytes)) ?? throw new InvalidDataException();
 
-        T deserialized = obj as T ?? throw new InvalidDataException();
+//         return deserialized;
+//     }
 
-        return deserialized;
-    }
+//     public static byte[] Encode<T>(T obj) where T : class
+//     {
+//         if (obj is null)
+//         {
+//             throw new ArgumentNullException();
+//         }
 
-    public static byte[] Encode<T>(T obj)where T: class{
-        if(obj is null){
-            throw new ArgumentNullException();
-        }
-
-        var bf = new BinaryFormatter();
-        using var ms = new MemoryStream();
-
-        bf.Serialize(ms, obj);
-        return ms.ToArray();
-    }
-}
+//         return Encoding.UTF8.GetBytes(JsonSerializer.Serialize(obj));
+//     }
+// }
