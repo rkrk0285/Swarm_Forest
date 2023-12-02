@@ -34,6 +34,7 @@ class GameNetworkingManager: MonoBehaviour{
         packetMakers.Add((ushort)PacketId.Instantiateobject, MakePacket<InstantiateObject>);
         packetMakers.Add((ushort)PacketId.Updateobjectstatus, MakePacket<UpdateObjectStatus>);
         packetMakers.Add((ushort)PacketId.Elitespawntimer, MakePacket<EliteSpawnTimer>);
+        packetMakers.Add((ushort)PacketId.Playerlocation, MakePacket<PlayerLocation>);
 
         packetHandlers.Add((ushort)PacketId.Moveobject, MoveObject);
         packetHandlers.Add((ushort)PacketId.Objectdead, ObjectDead);
@@ -41,6 +42,7 @@ class GameNetworkingManager: MonoBehaviour{
         packetHandlers.Add((ushort)PacketId.Instantiateobject, InstantiateObject);
         packetHandlers.Add((ushort)PacketId.Updateobjectstatus, UpdateObjectStatus);
         packetHandlers.Add((ushort)PacketId.Elitespawntimer, EliteSpawnTimer);
+        packetHandlers.Add((ushort)PacketId.Playerlocation, PlayerLocation);
     }
 
     private void LoadSessionState(){
@@ -88,7 +90,7 @@ class GameNetworkingManager: MonoBehaviour{
     public EventHandler<InstantiateObject> InstantiateObjectEventHandler;
     private void InstantiateObject(Session session, IMessage packet){
         var instantiatePacket = packet as InstantiateObject;
-        InstantiateObjectEventHandler?.Invoke(instantiatePacket);
+        InstantiateObjectEventHandler?.Invoke(session, instantiatePacket);
     }
 
     public void InstantiateObject(int ObjectType, int HP, UnityEngine.Vector3 Position){
@@ -117,6 +119,12 @@ class GameNetworkingManager: MonoBehaviour{
             ObjectId = ObjectId,
             HP = HP
         });
+    }
+
+    public EventHandler<PlayerLocation> PlayerLocationEventHandler;
+    private void PlayerLocation(Session session, IMessage packet){
+        var playerLocationPacket = packet as PlayerLocation;
+        PlayerLocationEventHandler?.Invoke(session, playerLocationPacket);
     }
 
     private void OnReceive(object sender, ReceivedEventArgs e){
