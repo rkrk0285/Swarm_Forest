@@ -12,24 +12,22 @@ using Unity.Mathematics;
 
 
 class GameNetworkingManager: MonoBehaviour{
-
-    public GameObject ObjectManager;
     Session session;
 
     public int UserId{get; private set;}
     public string SessionId{get; private set;}
     public int RoomId{get; private set;}
 
-    Dictionary<ushort, Func<ArraySegment<byte>, IMessage>> packetMakers = new Dictionary<ushort, Func<ArraySegment<byte>, IMessage>>();
-    Dictionary<ushort, Action<Session, IMessage>> packetHandlers = new Dictionary<ushort, Action<Session, IMessage>>();
+    private Dictionary<ushort, Func<ArraySegment<byte>, IMessage>> packetMakers = new Dictionary<ushort, Func<ArraySegment<byte>, IMessage>>();
+    private Dictionary<ushort, Action<Session, IMessage>> packetHandlers = new Dictionary<ushort, Action<Session, IMessage>>();
 
-    void Start(){
+    private void Start(){
         LoadSessionState();
         InitializePacketHandlers();
         InitializeSession();
     }
 
-    void InitializePacketHandlers(){
+    private void InitializePacketHandlers(){
         packetMakers.Add((ushort)PacketId.Moveobject, MakePacket<MoveObject>);
         packetMakers.Add((ushort)PacketId.Objectdead, MakePacket<ObjectDead>);
         packetMakers.Add((ushort)PacketId.Objectidres, MakePacket<ObjectIDRes>);
@@ -45,66 +43,83 @@ class GameNetworkingManager: MonoBehaviour{
         packetHandlers.Add((ushort)PacketId.Elitespawntimer, EliteSpawnTimer);
     }
 
-    void LoadSessionState(){
+    private void LoadSessionState(){
         UserId = PlayerPrefs.GetInt("UserId");
         RoomId = PlayerPrefs.GetInt("RoomId");
         SessionId = PlayerPrefs.GetString("SessionId");
     }
 
-    void InitializeSession(){
+    private void InitializeSession(){
         session = new Session(UserId, SessionId);
         session.ReceivedEvent += OnReceive;
         session.ConnectGameServer();
     }
 
     public EventHandler<MoveObject> MoveObjectEventHandler;
-    void MoveObject(Session session, IMessage packet){
+    private void MoveObject(Session session, IMessage packet){
         var moveObjectPacket = packet as MoveObject;
         MoveObjectEventHandler?.Invoke(this, moveObjectPacket);
     }
+    
+    public void MoveObject(int ObjectId, UnityEngine.Vector3 Position){
+        session.Send(new MoveObject(){
+            ObjectId = ObjectId,
+            Position = Position.ToPacketVector3()
+        });
+    }
 
     public EventHandler<ObjectDead> ObjectDeadEventHandler;
-    void ObjectDead(Session session, IMessage packet){
+    private void ObjectDead(Session session, IMessage packet){
         var objectDeadPacket = packet as ObjectDead;
         ObjectDeadEventHandler?.Invoke(this, objectDeadPacket);
     }
 
-    //Queue<int> NewObjectIds = new Queue<int>();
-    Queue<InstantiateObject> NewObjects = new();
+    public void ObjectDead(int ObjectId){
+        session.Send(new ObjectDead(){
+            ObjectId = ObjectId
+        });
+    }
 
-    void ObjectIDRes(Session session, IMessage packet){
+    private void ObjectIDRes(Session session, IMessage packet){
         var res = packet as ObjectIDRes;
-        //NewObjectIds.Enqueue(res.ObjectId);
-        NewObjects.Peek().ObjectId = res.ObjectId;
+        // DO NOTHING
     }
 
     public EventHandler<InstantiateObject> InstantiateObjectEventHandler;
-    void InstantiateObject(Session session, IMessage packet){
+    private void InstantiateObject(Session session, IMessage packet){
         var instantiatePacket = packet as InstantiateObject;
-        instantiatePacket.ObjectId = -1;
-        session.Send(new ObjectIDReq());
+        InstantiateObjectEventHandler?.Invoke(instantiatePacket);
+    }
+
+    public void InstantiateObject(int ObjectType, int HP, UnityEngine.Vector3 Position){
+        session.Send(new InstantiateObject(){
+            ObjectId = -1,
+            ObjectType = ObjectType,
+            HP = HP,
+            Position = Position.ToPacketVector3()
+        });
     }
 
     public EventHandler<EliteSpawnTimer> EliteSpawnTimerEventHandler;
-    void EliteSpawnTimer(Session session, IMessage packet){
+    private void EliteSpawnTimer(Session session, IMessage packet){
         var eliteSpawnTimerPacket = packet as EliteSpawnTimer;
         EliteSpawnTimerEventHandler?.Invoke(this, eliteSpawnTimerPacket);
     }
 
     public EventHandler<UpdateObjectStatus> UpdateObjectEventHandler;
-    void UpdateObjectStatus(Session session, IMessage packet){
+    private void UpdateObjectStatus(Session session, IMessage packet){
         var updateObjectPacket = packet as UpdateObjectStatus;
         UpdateObjectEventHandler?.Invoke(this, updateObjectPacket);
     }
 
-    void Update(){
-        if(NewObjects.Count != 0 && NewObjects.Peek().ObjectId != -1){
-            var NewObjectInfo = NewObjects.Dequeue();
-            InstantiateObjectEventHandler?.Invoke(this, NewObjectInfo);
-        }
+    public void UpdateObjectStatus(int ObjectId, int HP){
+        session.Send(new UpdateObjectStatus(){
+            ObjectId = ObjectId,
+            HP = HP
+        });
     }
 
-    void OnReceive(object sender, ReceivedEventArgs e){
+    private void OnReceive(object sender, ReceivedEventArgs e){
         var session = sender as Session;
         if(e.Buffer is null || e.Buffer.Count() == 0)
         {
@@ -124,7 +139,7 @@ class GameNetworkingManager: MonoBehaviour{
         packetHandler?.Invoke(session, packet);
     }
 
-    T MakePacket<T>(ArraySegment<byte> buffer) where T : IMessage, new()
+    private T MakePacket<T>(ArraySegment<byte> buffer) where T : IMessage, new()
     {
         T packet = new T();
         packet.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4);

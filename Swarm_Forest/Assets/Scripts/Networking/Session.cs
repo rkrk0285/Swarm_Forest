@@ -93,7 +93,7 @@ namespace Domino.Networking.TCP
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            var httpResponse = await client.PostAsJsonAsync("http://localhost:5172/login", request, option);
+            var httpResponse = await client.PostAsJsonAsync("http://xklest.asuscomm.com:5172/login", request, option);
 
             var response = await httpResponse.Content.ReadFromJsonAsync<AuthenticationResponse>(option);
             
@@ -115,7 +115,7 @@ namespace Domino.Networking.TCP
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            var httpResponse = await client.PostAsJsonAsync("http://localhost:5172/logout", request, option);
+            var httpResponse = await client.PostAsJsonAsync("http://xklest.asuscomm.com:5172/logout", request, option);
             await httpResponse.Content.ReadFromJsonAsync<object>(option);
             UnityEngine.Debug.Log("SignOut");
         }

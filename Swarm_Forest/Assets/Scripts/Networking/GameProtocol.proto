@@ -18,6 +18,7 @@ enum PacketId {
     UPDATEOBJECTSTATUS = 11;
     ELITESPAWNTIMER = 12;
     RESULT = 13;
+    PLAYERLOCATION = 14;
 }
 
 message C_Join {
@@ -82,4 +83,8 @@ message EliteSpawnTimer {
 
 message Result{
     bool successed = 1;
+}
+
+message PlayerLocation{
+    int32 Location = 1;
 }
