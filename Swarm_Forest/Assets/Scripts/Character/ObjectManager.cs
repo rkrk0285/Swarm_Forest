@@ -11,7 +11,8 @@ public class ObjectManager : MonoBehaviour
         {10, "ObjectPrefab/NormalEnemy" },
     };
 
-    public GameObject gameNetworkingManager;
+    public GameObject gameNetworkingManagerObject;
+    GameNetworkingManager gameNetworkingManager;
     public Transform parent_Transform;
     private float spawn_Interval = 10000f; // For Debug.
     private float spawn_Timer = 10000f;
@@ -20,6 +21,7 @@ public class ObjectManager : MonoBehaviour
     private void Start()
     {
         InitializeNetworkHandler();
+        gameNetworkingManager = gameNetworkingManagerObject.GetComponent<GameNetworkingManager>();
     }
 
     private void Update()
@@ -64,10 +66,10 @@ public class ObjectManager : MonoBehaviour
 
     void InitializeNetworkHandler()
     {
-        gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObjectEventHandler += InstantiateObjectHandler;
-        gameNetworkingManager.GetComponent<GameNetworkingManager>().UpdateObjectEventHandler += UpdateObjectHandler;
-        gameNetworkingManager.GetComponent<GameNetworkingManager>().PlayerLocationEventHandler += PlayerLocationHandler;
-        gameNetworkingManager.GetComponent<GameNetworkingManager>().ObjectDeadEventHandler += ObjectDeadEventHandler;
+        gameNetworkingManager.InstantiateObjectEventHandler += InstantiateObjectHandler;
+        gameNetworkingManager.UpdateObjectEventHandler += UpdateObjectHandler;
+        gameNetworkingManager.PlayerLocationEventHandler += PlayerLocationHandler;
+        gameNetworkingManager.ObjectDeadEventHandler += ObjectDeadEventHandler;
     }
 
     Queue<InstantiateObject> nextInstantiateObjects = new Queue<InstantiateObject>();
@@ -104,7 +106,7 @@ public class ObjectManager : MonoBehaviour
                 return;
         }
 
-        gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObject(0, 500, SpawnPos);
+        gameNetworkingManager.InstantiateObject(0, 500, SpawnPos);
     }
     void UpdateObjectEventHandler(object sender, EliteSpawnTimer packet)
     {
@@ -114,13 +116,13 @@ public class ObjectManager : MonoBehaviour
     Queue<ObjectDead> nextDeadObjects = new Queue<ObjectDead>();
     void ObjectDeadEventHandler(object sender, ObjectDead packet)
     {
-        // ¿ÀºêÁ§Æ® ¾ÆÀÌµğ·Î ¿ÀºêÁ§Æ® »èÁ¦.
+        // ì˜¤ë¸Œì íŠ¸ ì•„ì´ë””ë¡œ ì˜¤ë¸Œì íŠ¸ ì‚­ì œ.
         nextDeadObjects.Enqueue(packet);        
     }
 
     void Send_NormalSpawnRequest(int Type)
     {
-        // ÀÏ¹İ Àû 4¸¶¸®¾¿ ¼ÒÈ¯
+        // ì¼ë°˜ ì  4ë§ˆë¦¬ì”© ì†Œí™˜
         float z = Random.Range(100, 900);
         float[] dx = new float[4] { 970, 30, z, z };
         float[] dz = new float[4] { z, z, 970, 30 };
@@ -128,15 +130,15 @@ public class ObjectManager : MonoBehaviour
         int hp = Get(Type).GetComponent<ICharacter>().HealthPoint;
         for (int i = 0; i < 4; i++)
         {
-            // ¿äÃ» ¹ß¼Û.
+            // ìš”ì²­ ë°œì†¡.
             Send_SpawnRequest(Type, hp, new UnityEngine.Vector3(dx[i], 0, dz[i]));
         }
     }
 
     void Send_SpawnRequest(int Type, int HP, UnityEngine.Vector3 Pos)
     {
-        // ¼ÒÈ¯ ¿äÃ».
-        gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObject(Type, HP, Pos);
+        // ì†Œí™˜ ìš”ì²­.
+        gameNetworkingManager.InstantiateObject(Type, HP, Pos);
     }    
 
     public GameObject FindObject(int FindID)
@@ -150,7 +152,7 @@ public class ObjectManager : MonoBehaviour
     }
     public static GameObject Get(int Type)
     {
-        // Å¸ÀÔ °ªÀ¸·Î °ÔÀÓ ¿ÀºêÁ§Æ® ¸®ÅÏ.
+        // íƒ€ì… ê°’ìœ¼ë¡œ ê²Œì„ ì˜¤ë¸Œì íŠ¸ ë¦¬í„´.
         if (!AllObjects.ContainsKey(Type))
             throw new KeyNotFoundException($"There is no skill have Type: {Type}");
         return Resources.Load<GameObject>(AllObjects[Type]);
