@@ -7,7 +7,7 @@ using UnityEngine;
 public class Skill: MonoBehaviour{
         
     public int ID;    
-    public float BaseDamage;    
+    public int BaseDamage;    
     public float PercentDamage;    
     public float LifeTime;    
     public float Cooldown;    

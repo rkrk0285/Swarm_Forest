@@ -1,37 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
+using Google.Protobuf.GameProtocol;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
-{
-    [SerializeField]
-    GameObject Player;
-    [SerializeField]
-    Plane _plane;    
-
-    //임시
+{    
+    public GameObject Player;    
+    public GameObject gameNetworkingManager;    
+    
     private PlayerManager playerManager;
     private void Start()
     {
         playerManager = Player.GetComponent<PlayerManager>();
+        InitializeNetworkHandler();
     }
     //
 
     void Update()
     {
         input_Control();
+        MovePlayerObejct();
+    }
+
+    // Run in Main Thread Only
+    void MovePlayerObejct()
+    {
+        if (DoMove)
+        {
+            Player.GetComponent<PlayerManager>().movePlayer(nextPosition);
+            DoMove = false;
+        }
+    }
+
+    bool DoMove = false;
+    UnityEngine.Vector3 nextPosition;
+
+    void InitializeNetworkHandler()
+    {
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObjectEventHandler += MoveObjectHandler;
+
+        // FOR DEBUG
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObject(0, 100, new UnityEngine.Vector3(0, 0, 0));
+    }
+    
+    void MoveObjectHandler(object sender, MoveObject moveObjectPacket)
+    {
+        DoMove = true;
+        nextPosition = moveObjectPacket.Position.ToUnityVector3();
     }
 
     void input_Control()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-         
+
         if (Input.GetMouseButton(1))
-        {            
+        {
             if (Physics.Raycast(ray, out hit))
             {                
-                Player.GetComponent<PlayerManager>().movePlayer(hit.point);
+                gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObject(0, hit.point);
             }
         }
 
@@ -59,7 +86,7 @@ public class InputManager : MonoBehaviour
 
     #region Raycasting
     // Adjust Ray point
-    private Vector3 NormalizeRayPoint(Vector3 rayPoint)
+    private UnityEngine.Vector3 NormalizeRayPoint(UnityEngine.Vector3 rayPoint)
     {
         var direction = rayPoint - Player.transform.position;
         direction.y = 1f;
@@ -68,7 +95,7 @@ public class InputManager : MonoBehaviour
         return direction;
     }
 
-    private Vector3 MousePositionOnMap()
+    private UnityEngine.Vector3 MousePositionOnMap()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -77,7 +104,7 @@ public class InputManager : MonoBehaviour
             return raycastHit.point;
         }
 
-        return Vector3.zero;
+        return UnityEngine.Vector3.zero;
     }
     #endregion
 

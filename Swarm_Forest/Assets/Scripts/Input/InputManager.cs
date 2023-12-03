@@ -14,7 +14,7 @@
 
 
 //    const int LMB = 0, RMB = 1;
-//    private bool[] MouseDown; 
+//    private bool[] MouseDown;
 
 //    private Action[] MouseFunctions;
 
@@ -27,7 +27,8 @@
 
 //    Dictionary<KeyCode, bool> KeyDown;
 
-//    void Start(){
+//    void Start()
+//    {
 //        InitKeyDown();
 //    }
 
@@ -37,14 +38,15 @@
 //        ProcessInput();
 //    }
 
-//    void InitKeyDown(){
+//    void InitKeyDown()
+//    {
 //        MouseDown = new bool[2];
 //        MouseDown[LMB] = false; MouseDown[RMB] = false;
 
 //        MouseFunctions = new Action[2];
 //        MouseFunctions[LMB] = KeyDown_LMB;
 //        MouseFunctions[RMB] = KeyDown_RMB;
-        
+
 //        KeyDown = new Dictionary<KeyCode, bool>
 //        {
 //            { KeyCode.Q, false },
@@ -54,54 +56,59 @@
 //        };
 //    }
 
-//    void CheckKeyDown(){
+//    void CheckKeyDown()
+//    {
 //        // Check Mouse
 //        MouseDown[LMB] = Input.GetMouseButtonDown(LMB);
 //        MouseDown[RMB] = Input.GetMouseButtonDown(RMB);
 
 //        // Check Keyboard
-//        foreach(var keyCode in keyCodes)
+//        foreach (var keyCode in keyCodes)
 //            KeyDown[keyCode] = Input.GetKeyDown(keyCode);
 //    }
 
-    
+
 //    void ProcessInput()
 //    {
-//        if(MouseDown[LMB]) MouseFunctions[LMB]();
-//        if(MouseDown[RMB]) MouseFunctions[RMB]();
-//        foreach(var keyCode in keyCodes) 
-//            if(KeyDown[keyCode]) KeyFunction(keyCode);
+//        if (MouseDown[LMB]) MouseFunctions[LMB]();
+//        if (MouseDown[RMB]) MouseFunctions[RMB]();
+//        foreach (var keyCode in keyCodes)
+//            if (KeyDown[keyCode]) KeyFunction(keyCode);
 //    }
 
-//#region Input Callbacks, Change Here!!!
-//    void KeyDown_LMB(){
+//    #region Input Callbacks, Change Here!!!
+//    void KeyDown_LMB()
+//    {
 
 //    }
 
-//    void KeyDown_RMB(){
+//    void KeyDown_RMB()
+//    {
 //        // Make move event
 //        // Send to server
 //    }
 
-//    void KeyFunction(KeyCode keyCode){
+//    void KeyFunction(KeyCode keyCode)
+//    {
 //        var caster = Player.GetComponent<ICharacter>();
 //        var skillObject = caster.Skills[keyCode];
-        
-//        if(skillObject == null) return;
+
+//        if (skillObject == null) return;
 
 //        var mousePositionOnMap = NormalizeRayPoint(MousePositionOnMap());
 
 //        GameManager.GetComponent<SkillManager>().Cast(
 //            caster,
-//            skillObject, 
+//            skillObject,
 //            mousePositionOnMap
 //        );
 //    }
-//#endregion
+//    #endregion
 
-//#region Raycasting
-//// Adjust Ray point
-//    private Vector3 NormalizeRayPoint(Vector3 rayPoint){
+//    #region Raycasting
+//    // Adjust Ray point
+//    private Vector3 NormalizeRayPoint(Vector3 rayPoint)
+//    {
 //        var direction = rayPoint - Player.transform.position;
 //        direction.y = 1f;
 //        direction = direction.normalized;
@@ -109,14 +116,16 @@
 //        return direction;
 //    }
 
-//    private Vector3 MousePositionOnMap(){
+//    private Vector3 MousePositionOnMap()
+//    {
 //        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-//        if(Physics.Raycast(ray, out var raycastHit)){
+//        if (Physics.Raycast(ray, out var raycastHit))
+//        {
 //            return raycastHit.point;
 //        }
 
 //        return Vector3.zero;
 //    }
-//#endregion
+//    #endregion
 //}

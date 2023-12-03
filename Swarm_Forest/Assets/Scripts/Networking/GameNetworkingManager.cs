@@ -21,12 +21,15 @@ class GameNetworkingManager: MonoBehaviour{
     private Dictionary<ushort, Func<ArraySegment<byte>, IMessage>> packetMakers = new Dictionary<ushort, Func<ArraySegment<byte>, IMessage>>();
     private Dictionary<ushort, Action<Session, IMessage>> packetHandlers = new Dictionary<ushort, Action<Session, IMessage>>();
 
-    private void Start(){
+    private void Awake(){
         LoadSessionState();
         InitializePacketHandlers();
         InitializeSession();
     }
-
+    void OnDestroy()
+    {
+        if (session.Connected) session.Disconnect();
+    }
     private void InitializePacketHandlers(){
         packetMakers.Add((ushort)PacketId.Moveobject, MakePacket<MoveObject>);
         packetMakers.Add((ushort)PacketId.Objectdead, MakePacket<ObjectDead>);
@@ -55,6 +58,7 @@ class GameNetworkingManager: MonoBehaviour{
         session = new Session(UserId, SessionId);
         session.ReceivedEvent += OnReceive;
         session.ConnectGameServer();
+        session.Send(new MatchJoin() { RoomId = RoomId });
     }
 
     public EventHandler<MoveObject> MoveObjectEventHandler;
@@ -129,10 +133,13 @@ class GameNetworkingManager: MonoBehaviour{
 
     private void OnReceive(object sender, ReceivedEventArgs e){
         var session = sender as Session;
+        if (!session.Connected)
+            return;
         if(e.Buffer is null || e.Buffer.Count() == 0)
         {
             Debug.Log("Disconnected");
             session.Disconnect();
+            return;
         }
 
         ushort count = 0;

@@ -20,21 +20,24 @@ public class PlayerManager : ICharacter
     private void Start()
     {
         nvAgent = GetComponent<NavMeshAgent>();
-        ID = 0;
+        ID = -1;
+        Type = 0;
         Prefab = this.gameObject;
-        AttackPoint = 5f;
-        MaxHealthPoint = 500f;
-        HealthPoint = 500f;
+        AttackPoint = 5;
+        MaxHealthPoint = 50010;
+        HealthPoint = 50010;
         //MovementVelocity = 10f;
     }
     private void Update()
     {
         if (autoMove)
-        {            
-            nvAgent.SetDestination(destination);
+        {
+            //nvAgent.SetDestination(destination);
+            transform.position = destination;
             player_Camera.transform.position = new Vector3(transform.position.x, 80, transform.position.z) - offset;
+            autoMove = false;
         }
-        HP_Slider.value = HealthPoint / MaxHealthPoint;
+        HP_Slider.value = (float)HealthPoint / (float)MaxHealthPoint;
     }
     public void movePlayer(Vector3 pos)
     {
@@ -45,8 +48,7 @@ public class PlayerManager : ICharacter
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Enemy")
-        {
-            Debug.Log("적 플 충돌");
+        {            
             float damage = other.gameObject.GetComponent<ICharacter>().AttackPoint;
             Damaged(AttackPoint, -2);
         }

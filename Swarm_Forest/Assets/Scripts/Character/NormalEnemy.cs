@@ -6,11 +6,12 @@ public class NormalEnemy : ICharacter
 {    
     private void Start()
     {
-        ID = 1;
+        ID = -1;
+        Type = 10;
         Prefab = this.gameObject;
-        AttackPoint = 5f;
-        MaxHealthPoint = 50f;
-        HealthPoint = 50f;
+        AttackPoint = 5;
+        MaxHealthPoint = 50;
+        HealthPoint = 50;
         MovementVelocity = 5f;
     }    
 }

@@ -26,7 +26,10 @@ public class MatchmakingManager : MonoBehaviour
     ReceiveEventHandler currentFunc = null;
 
     Queue<ReceiveEventHandler> receiveEventHandlers = new();
-
+    void OnDestroy()
+    {
+        if (session.Connected) session.Disconnect();
+    }
     public void AddReceiveCallback(ReceiveEventHandler func){
         receiveEventHandlers.Enqueue(func);
     }

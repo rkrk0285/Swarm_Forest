@@ -5,16 +5,16 @@ using UnityEngine;
 
 public abstract class ICharacter: MonoBehaviour{
     public int ID{get; set;}
+    public int Type { get; set; }
     public GameObject Prefab;
     
-    public float AttackPoint{get;set;}
-
-    public float MaxHealthPoint{get;set;}
-    public float HealthPoint{get;set;}
-
+    public int AttackPoint{get;set;}
+    public int MaxHealthPoint{get;set;}
+    public int HealthPoint{get;set;}
     public float MovementVelocity{get; set;}
-    
-    private event Action<int> PassiveSkillEffect;    
+
+    //private event Action<int> PassiveSkillEffect;    
+    private GameObject gameNetworkingManager;
 
     [SerializeField]
     private Animator Ani;
@@ -46,21 +46,16 @@ public abstract class ICharacter: MonoBehaviour{
         Destroy(this.gameObject);
     }
     
-    public bool Damaged(float damagedHP, int skillID)
+    public bool Damaged(int damage, int skillID)
     {
         if (!CanHit(skillID))
             return false;
 
-        // 체력 감소.
-        HealthPoint -= damagedHP;
-
         // 히트 액션 호출.
         Ani.SetTrigger("HitTrigger");
 
-        if (HealthPoint <= 0)
-            DieCharacter();
-
-        Debug.Log(HealthPoint);
+        // 상태 변경 요청.
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().UpdateObjectStatus(ID, HealthPoint - damage);
         return true;
     }
 
