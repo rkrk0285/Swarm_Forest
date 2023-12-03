@@ -112,6 +112,6 @@ public class InputManager : MonoBehaviour
     public void add_Skill(KeyCode keyCode, int num)
     {
         playerManager.AddSkill(keyCode, num);
-        playerManager.switchSkillUI(keyCode, num);
+        //playerManager.switchSkillUI(keyCode, num);
     }
 }
