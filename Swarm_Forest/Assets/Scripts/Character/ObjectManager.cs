@@ -13,8 +13,8 @@ public class ObjectManager : MonoBehaviour
 
     public GameObject gameNetworkingManager;
     public Transform parent_Transform;
-    private float spawn_Interval = 5f;    
-    private float spawn_Timer = 0.0f;
+    private float spawn_Interval = 10000f; // For Debug.
+    private float spawn_Timer = 10000f;
             
     int spawnID;
     private void Start()
@@ -33,13 +33,14 @@ public class ObjectManager : MonoBehaviour
         }
         
         while(nextInstantiateObjects.Count != 0)
-        {
+        {            
             var Info = nextInstantiateObjects.Dequeue();
 
             GameObject obj = Get(Info.ObjectType);
             UnityEngine.Vector3 spawnPos = Info.Position.ToUnityVector3();
-            Instantiate(obj, spawnPos, Quaternion.identity, parent_Transform);               
-            obj.GetComponent<ICharacter>().ID = Info.ObjectId;
+            
+            GameObject clone = Instantiate(obj, spawnPos, Quaternion.identity, parent_Transform);            
+            clone.GetComponent<ICharacter>().ID = Info.ObjectId;
         }
 
         while(nextUpdateObjects.Count != 0)
@@ -52,6 +53,12 @@ public class ObjectManager : MonoBehaviour
 
             obj.GetComponent<ICharacter>().HealthPoint = info.HP;
         }
+
+        while(nextDeadObjects.Count != 0)
+        {
+            var Info = nextDeadObjects.Dequeue();            
+            Destroy(FindObject(Info.ObjectId));
+        }
     }
 
 
@@ -59,12 +66,13 @@ public class ObjectManager : MonoBehaviour
     {
         gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObjectEventHandler += InstantiateObjectHandler;
         gameNetworkingManager.GetComponent<GameNetworkingManager>().UpdateObjectEventHandler += UpdateObjectHandler;
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().PlayerLocationEventHandler += PlayerLocationHandler;
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().ObjectDeadEventHandler += ObjectDeadEventHandler;
     }
 
     Queue<InstantiateObject> nextInstantiateObjects = new Queue<InstantiateObject>();
     void InstantiateObjectHandler(object sender, InstantiateObject instantiateObjectPacket)
-    {
-        Debug.Log("IOH");
+    {        
         nextInstantiateObjects.Enqueue(instantiateObjectPacket);
     }
 
@@ -74,24 +82,48 @@ public class ObjectManager : MonoBehaviour
         Debug.Log("UOH");
         nextUpdateObjects.Enqueue(updateObjectStatusPacket);
     }
+    
+    void PlayerLocationHandler(object sender, PlayerLocation playerLocationPacket)
+    {
+        UnityEngine.Vector3 SpawnPos = UnityEngine.Vector3.zero;
+        switch(playerLocationPacket.Location)
+        {
+            case 1:
+                SpawnPos = new UnityEngine.Vector3(500, 0, 100);
+                break;
+            case 2:
+                SpawnPos = new UnityEngine.Vector3(900, 0, 500);
+                break;
+            case 3:
+                SpawnPos = new UnityEngine.Vector3(500, 0, 900);
+                break;
+            case 4:
+                SpawnPos = new UnityEngine.Vector3(100, 0, 500);
+                break;
+            default:
+                return;
+        }
 
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObject(0, 500, SpawnPos);
+    }
     void UpdateObjectEventHandler(object sender, EliteSpawnTimer packet)
     {
 
     }
 
+    Queue<ObjectDead> nextDeadObjects = new Queue<ObjectDead>();
     void ObjectDeadEventHandler(object sender, ObjectDead packet)
     {
         // 오브젝트 아이디로 오브젝트 삭제.
-        Destroy(FindObject(packet.ObjectId));
+        nextDeadObjects.Enqueue(packet);        
     }
 
     void Send_NormalSpawnRequest(int Type)
     {
         // 일반 적 4마리씩 소환
-        float z = Random.Range(-400, 400);
-        float[] dx = new float[4] { 470, -470, z, z };
-        float[] dz = new float[4] { z, z, 470, -470 };
+        float z = Random.Range(100, 900);
+        float[] dx = new float[4] { 970, 30, z, z };
+        float[] dz = new float[4] { z, z, 970, 30 };
         
         int hp = Get(Type).GetComponent<ICharacter>().HealthPoint;
         for (int i = 0; i < 4; i++)

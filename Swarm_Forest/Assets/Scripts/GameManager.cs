@@ -15,10 +15,5 @@ public class GameManager : MonoBehaviour
             instance = this;
         else
             Destroy(this);
-    }
-
-    public void add_Skill(int num)
-    {
-
-    }
+    }    
 }

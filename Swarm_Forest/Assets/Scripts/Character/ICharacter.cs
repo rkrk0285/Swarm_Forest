@@ -14,7 +14,7 @@ public abstract class ICharacter: MonoBehaviour{
     public float MovementVelocity{get; set;}
 
     //private event Action<int> PassiveSkillEffect;    
-    private GameObject gameNetworkingManager;
+    public GameObject gameNetworkingManager;
 
     [SerializeField]
     private Animator Ani;
@@ -54,7 +54,7 @@ public abstract class ICharacter: MonoBehaviour{
         // 히트 액션 호출.
         Ani.SetTrigger("HitTrigger");
 
-        // 상태 변경 요청.
+        // 상태 변경 요청.        
         gameNetworkingManager.GetComponent<GameNetworkingManager>().UpdateObjectStatus(ID, HealthPoint - damage);
         return true;
     }
@@ -74,6 +74,6 @@ public abstract class ICharacter: MonoBehaviour{
         return true;
     }
 
-    void Start(){                       
+    void Start(){        
     }
 }
