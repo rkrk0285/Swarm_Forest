@@ -11,7 +11,7 @@ public class SpawnManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnEnemy();
+        //SpawnEnemy();
     }
 
     //private void Update()

@@ -857,7 +857,7 @@ GameObject:
   - component: {fileID: 6703971417404227673}
   - component: {fileID: 4831243865638550380}
   m_Layer: 0
-  m_Name: FootmanHP
+  m_Name: NormalEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

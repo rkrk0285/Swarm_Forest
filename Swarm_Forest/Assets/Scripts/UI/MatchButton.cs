@@ -15,7 +15,7 @@ using UnityEngine.SceneManagement;
 public class MatchButton : MonoBehaviour
 {
     public GameObject NetworkManager;
-    MatchmakingManager networkManager{get;set;}
+    MatchmakingManager networkManager { get; set; }
 
     Dictionary<ushort, Func<ArraySegment<byte>, IMessage>> packetMakers = new Dictionary<ushort, Func<ArraySegment<byte>, IMessage>>();
     Dictionary<ushort, Action<Session, IMessage>> packetHandlers = new Dictionary<ushort, Action<Session, IMessage>>();
@@ -28,27 +28,34 @@ public class MatchButton : MonoBehaviour
         InitializeNetworkManager();
     }
 
-    void InitializePacketHandlers(){
+    void InitializePacketHandlers()
+    {
         packetMakers.Add((ushort)PacketId.SReady, MakePacket<S_Ready>);
         packetMakers.Add((ushort)PacketId.SResponse, MakePacket<S_Response>);
         packetHandlers.Add((ushort)PacketId.SReady, ProcessMatchReady);
         packetHandlers.Add((ushort)PacketId.SResponse, ProcessResult);
     }
-    
-    void InitializeButton(){
+
+    void InitializeButton()
+    {
         gameObject.GetComponent<Button>().onClick.AddListener(OnClick);
     }
-    void InitializeNetworkManager(){
+    void InitializeNetworkManager()
+    {
         networkManager = NetworkManager.GetComponent<MatchmakingManager>();
         networkManager.AddReceiveCallback(OnReceive);
     }
 
-    void OnReceive(object sender, ReceivedEventArgs e){
+    void OnReceive(object sender, ReceivedEventArgs e)
+    {
         var session = sender as Session;
-        if(e.Buffer is null || e.Buffer.Count() == 0)
+        if (!session.Connected)
+            return;
+        if (e.Buffer is null || e.Buffer.Length == 0)
         {
             Debug.Log("Disconnected");
             session.Disconnect();
+            return;
         }
 
         ushort count = 0;
@@ -63,40 +70,58 @@ public class MatchButton : MonoBehaviour
         packetHandler?.Invoke(session, packet);
     }
 
-    void ProcessResult(Session session, IMessage packet){
+    void ProcessResult(Session session, IMessage packet)
+    {
         var resultPacket = packet as S_Response;
 
         Debug.Log($"Result: {resultPacket.Successed}");
     }
 
-    void ProcessMatchReady(Session session, IMessage packet){
+    class GameServerInfo
+    {
+        public int RoomId { get; set; }
+        public int UserId { get; set; }
+        public string SessionId { get; set; }
+        public string MatchServerAddr { get; set; }
+        public string GameServerAddr { get; set; }
+    }
+    GameServerInfo gameServerInfo = null;
+
+    void ProcessMatchReady(Session session, IMessage packet)
+    {
         var readyPacket = packet as S_Ready;
 
         Debug.Log("match ready");
         Debug.Log(readyPacket.RoomId);
 
-        // Save authentication status
-        SaveSessionState(session, readyPacket);
-        // Move Scene
-        LoadGameScene();
+        gameServerInfo = new()
+        {
+            RoomId = readyPacket.RoomId,
+            UserId = session.UserId,
+            SessionId = session.SessionId,
+            MatchServerAddr = session.MatchServerAddr,
+            GameServerAddr = session.GameServerAddr
+        };
     }
 
-    void SaveSessionState(Session session, S_Ready readyPacket){
-        PlayerPrefs.SetInt("RoomId", readyPacket.RoomId);
-        PlayerPrefs.SetInt("UserId", session.UserId);
-        PlayerPrefs.SetString("SessionId", session.SessionId);
-        PlayerPrefs.SetString("MatchServerAddr", session.MatchServerAddr);
-        PlayerPrefs.SetString("GameServerAddr", session.GameServerAddr);
+    void SaveSessionState(GameServerInfo gameServerInfo)
+    {
+        PlayerPrefs.SetInt("RoomId", gameServerInfo.RoomId);
+        PlayerPrefs.SetInt("UserId", gameServerInfo.UserId);
+        PlayerPrefs.SetString("SessionId", gameServerInfo.SessionId);
+        PlayerPrefs.SetString("MatchServerAddr", gameServerInfo.MatchServerAddr);
+        PlayerPrefs.SetString("GameServerAddr", gameServerInfo.GameServerAddr);
     }
 
-    void LoadGameScene(){
+    void LoadGameScene()
+    {
         StartCoroutine(LoadMyAsyncScene());
     }
-    
+
     IEnumerator LoadMyAsyncScene()
-    {    
+    {
         // AsyncOperation을 통해 Scene Load 정도를 알 수 있다.
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("GameScene");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Player_Move 1");
 
         // Scene을 불러오는 것이 완료되면, AsyncOperation은 isDone 상태가 된다.
         while (!asyncLoad.isDone)
@@ -106,13 +131,15 @@ public class MatchButton : MonoBehaviour
     }
 
     bool Register = true;
-    void OnClick(){
-        if(!networkManager.Connected){
+    void OnClick()
+    {
+        if (!networkManager.Connected)
+        {
             Debug.Log("Disconnected");
             return;
         }
         //Debug.Log(networkManager.Connected);
-        if(Register)networkManager.Register();
+        if (Register) networkManager.Register();
         else networkManager.Cancel();
 
         //Debug.Log(Register ? "Register" : "CancelRegister");
@@ -120,10 +147,23 @@ public class MatchButton : MonoBehaviour
         Register = !Register;
     }
 
-    T MakePacket<T>(ArraySegment<byte> buffer) where T : IMessage, new()
+    void Update()
+    {
+        if (gameServerInfo != null)
         {
-            T packet = new T();
-            packet.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4);
-            return packet;
+            // Save authentication status
+            SaveSessionState(gameServerInfo);
+            // Move Scene
+            LoadGameScene();
+
+            gameServerInfo = null;
         }
+    }
+
+    T MakePacket<T>(ArraySegment<byte> buffer) where T : IMessage, new()
+    {
+        T packet = new T();
+        packet.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4);
+        return packet;
+    }
 }

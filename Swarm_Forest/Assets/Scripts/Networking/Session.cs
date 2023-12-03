@@ -10,7 +10,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Domino.Networking.HTTP;
-using UnityEditor.UI;
 using UnityEngine.Assertions;
 using Google.Protobuf;
 using Google.Protobuf.GameProtocol;
@@ -63,8 +62,11 @@ namespace Domino.Networking.TCP
             this.SessionId = SessionId;
         }
 
-        ~Session(){
-            if(UserId != -1) SignOut().Wait();
+        public bool doSignOut = false;
+        ~Session()
+        {
+            if (Connected) Disconnect();
+            if (UserId != -1 && doSignOut) SignOut().Wait();
         }
 
         private Socket m_socket;
@@ -143,31 +145,35 @@ namespace Domino.Networking.TCP
             GameServerAddr = PlayerPrefs.GetString("GameServerAddr");
         }
 
-        public void Connect(string host, int port){
+        public void Connect(string host, int port)
+        {
             m_socket ??= new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             m_socket.Connect(host, port);
 
-            if(!m_socket.Connected){
+            if (!m_socket.Connected)
+            {
                 m_socket = null;
                 return;
             }
 
             Thread.Sleep(100);
-            
+
             byte[] authBuffer = new byte[40];
             Array.Copy(BitConverter.GetBytes(UserId), 0, authBuffer, 0, 4);
             Array.Copy(Encoding.UTF8.GetBytes(SessionId), 0, authBuffer, 4, 36);
 
-            Send(authBuffer);
+            m_socket.Send(authBuffer);
 
-            BeginReceive();
+            var recvState = new CommunicationState();
+            recvState.socket = m_socket;
+            m_socket.BeginReceive(recvState.buffer, 0, CommunicationState.BUF_MAX, SocketFlags.None, new AsyncCallback(ReceiveCallback), recvState);
         }
 
         public void Send(IMessage packet)
-        {
-            string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
-            PacketId msgId = (PacketId)Enum.Parse(typeof(PacketId), msgName);
+        {            
+            string msgName = packet.Descriptor.Name.Replace("_", string.Empty);            
+            PacketId msgId = (PacketId)Enum.Parse(typeof(PacketId), msgName, true);
             ushort size = (ushort)packet.CalculateSize();
             byte[] sendBuffer = new byte[size + 4];
             Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
@@ -198,27 +204,30 @@ namespace Domino.Networking.TCP
             }
         }
 
-        private void BeginReceive(){
-            var recvState = new CommunicationState();
-            recvState.socket = m_socket;
-            m_socket.BeginReceive(recvState.buffer, 0, CommunicationState.BUF_MAX, SocketFlags.None, new AsyncCallback(ReceiveCallback), recvState);
-        }
+        //private void BeginReceive(){
+        //    var recvState = new CommunicationState();
+        //    recvState.socket = m_socket;
+        //    m_socket.BeginReceive(recvState.buffer, 0, CommunicationState.BUF_MAX, SocketFlags.None, new AsyncCallback(ReceiveCallback), recvState);
+        //}
 
-        private void ReceiveCallback(IAsyncResult ar){
+        private void ReceiveCallback(IAsyncResult ar)
+        {
             var state = ar.AsyncState as CommunicationState;
             Assert.IsNotNull(state);
             var socket = state.socket;
 
             var length = socket.EndReceive(ar, out var error);
 
-            if(error != SocketError.Success){
+            if (error != SocketError.Success)
+            {
                 Disconnect();
                 return;
             }
 
             state.length = length;
 
-            var args = new Event.ReceivedEventArgs{
+            var args = new Event.ReceivedEventArgs
+            {
                 Buffer = new byte[length]
             };
             Array.Copy(state.buffer, args.Buffer, length);
@@ -226,7 +235,10 @@ namespace Domino.Networking.TCP
             ReceivedEvent?.Invoke(this, args);
 
             // Make loop via calling BeginReceive continuously
-            BeginReceive();
+
+            socket.BeginReceive(state.buffer, 0, CommunicationState.BUF_MAX, SocketFlags.None, new AsyncCallback(ReceiveCallback), state);
+
+            //BeginReceive();
         }
 
         private void SendCallback(IAsyncResult ar){
