@@ -25,7 +25,7 @@ public class MatchButton : MonoBehaviour
     {
         InitializeButton();
         InitializePacketHandlers();
-        InitializeNetworkManager();
+        InitializeNetworkManager();        
     }
 
     void InitializePacketHandlers()

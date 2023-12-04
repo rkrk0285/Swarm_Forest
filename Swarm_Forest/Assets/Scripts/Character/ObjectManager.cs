@@ -7,21 +7,25 @@ public class ObjectManager : MonoBehaviour
 {
     public static Dictionary<int, string> AllObjects = new Dictionary<int, string> 
     {
-        {0, "ObjectPrefab/Player" },
+        {6, "ObjectPrefab/Player" },
+        {7, "ObjectPrefab/Player" },
+        {8, "ObjectPrefab/Player" },
+        {9, "ObjectPrefab/Player" },
         {10, "ObjectPrefab/NormalEnemy" },
     };
 
     public GameObject gameNetworkingManagerObject;
     GameNetworkingManager gameNetworkingManager;
     public Transform parent_Transform;
-    private float spawn_Interval = 10000f; // For Debug.
-    private float spawn_Timer = 10000f;
-            
-    int spawnID;
+    private float spawn_Interval = 100f; // For Debug.
+    private float spawn_Timer = 0f;
+    public int current_PlayerID;
+    public int current_PlayerType;
     private void Start()
     {
-        InitializeNetworkHandler();
         gameNetworkingManager = gameNetworkingManagerObject.GetComponent<GameNetworkingManager>();
+        InitializeNetworkHandler();
+        current_PlayerID = -1;
     }
 
     private void Update()
@@ -37,12 +41,19 @@ public class ObjectManager : MonoBehaviour
         while(nextInstantiateObjects.Count != 0)
         {            
             var Info = nextInstantiateObjects.Dequeue();
-
+            
             GameObject obj = Get(Info.ObjectType);
             UnityEngine.Vector3 spawnPos = Info.Position.ToUnityVector3();
-            
+                           
             GameObject clone = Instantiate(obj, spawnPos, Quaternion.identity, parent_Transform);            
             clone.GetComponent<ICharacter>().ID = Info.ObjectId;
+
+            // 현재 플레이어 아이디 넣기.
+            if (current_PlayerType == Info.ObjectType && current_PlayerID == -1)
+            {
+                Debug.Log(Info.ObjectId);
+                current_PlayerID = Info.ObjectId;
+            }
         }
 
         while(nextUpdateObjects.Count != 0)
@@ -61,18 +72,27 @@ public class ObjectManager : MonoBehaviour
             var Info = nextDeadObjects.Dequeue();            
             Destroy(FindObject(Info.ObjectId));
         }
+
+        while (nextMoveObjects.Count != 0)
+        {
+            var info = nextMoveObjects.Dequeue();
+            GameObject obj = FindObject(info.ObjectId);
+
+            obj.transform.position = info.Position.ToUnityVector3();
+        }
     }
 
 
     void InitializeNetworkHandler()
     {
+        gameNetworkingManager.MoveObjectEventHandler += MoveObjectHandler;
         gameNetworkingManager.InstantiateObjectEventHandler += InstantiateObjectHandler;
         gameNetworkingManager.UpdateObjectEventHandler += UpdateObjectHandler;
         gameNetworkingManager.PlayerLocationEventHandler += PlayerLocationHandler;
         gameNetworkingManager.ObjectDeadEventHandler += ObjectDeadEventHandler;
     }
-
-    Queue<InstantiateObject> nextInstantiateObjects = new Queue<InstantiateObject>();
+    
+    Queue<InstantiateObject> nextInstantiateObjects = new Queue<InstantiateObject>();    
     void InstantiateObjectHandler(object sender, InstantiateObject instantiateObjectPacket)
     {        
         nextInstantiateObjects.Enqueue(instantiateObjectPacket);
@@ -80,13 +100,21 @@ public class ObjectManager : MonoBehaviour
 
     Queue<UpdateObjectStatus> nextUpdateObjects = new Queue<UpdateObjectStatus>();
     void UpdateObjectHandler(object sender, UpdateObjectStatus updateObjectStatusPacket)
-    {
-        Debug.Log("UOH");
+    {        
         nextUpdateObjects.Enqueue(updateObjectStatusPacket);
     }
-    
+
+    Queue<MoveObject> nextMoveObjects = new Queue<MoveObject>();
+    void MoveObjectHandler(object sender, MoveObject moveObjectPacket)
+    {
+        if (current_PlayerID == moveObjectPacket.ObjectId)
+            return;
+
+        nextMoveObjects.Enqueue(moveObjectPacket);
+    }
     void PlayerLocationHandler(object sender, PlayerLocation playerLocationPacket)
     {
+        Debug.Log("PLH");
         UnityEngine.Vector3 SpawnPos = UnityEngine.Vector3.zero;
         switch(playerLocationPacket.Location)
         {
@@ -105,8 +133,8 @@ public class ObjectManager : MonoBehaviour
             default:
                 return;
         }
-
-        gameNetworkingManager.InstantiateObject(0, 500, SpawnPos);
+        current_PlayerType = playerLocationPacket.Location + 5;
+        gameNetworkingManager.InstantiateObject(current_PlayerType, 500, SpawnPos);
     }
     void UpdateObjectEventHandler(object sender, EliteSpawnTimer packet)
     {
@@ -154,7 +182,7 @@ public class ObjectManager : MonoBehaviour
     {
         // 타입 값으로 게임 오브젝트 리턴.
         if (!AllObjects.ContainsKey(Type))
-            throw new KeyNotFoundException($"There is no skill have Type: {Type}");
+            throw new KeyNotFoundException($"There is no Character have Type: {Type}");
         return Resources.Load<GameObject>(AllObjects[Type]);
     }    
 }

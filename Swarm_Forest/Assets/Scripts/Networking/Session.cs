@@ -14,6 +14,8 @@ using UnityEngine.Assertions;
 using Google.Protobuf;
 using Google.Protobuf.GameProtocol;
 using UnityEngine;
+// File Descriptor
+using System.IO;
 
 namespace Domino.Networking.Event{
     public class ConnectivityEventArgs{
@@ -90,7 +92,16 @@ namespace Domino.Networking.TCP
 
             HttpClient client = new HttpClient();
 
-            AuthenticationRequest request = AuthenticationRequest.Factory.Create("111111", "111111");
+            // File Descriptor
+            FileStream file = new FileStream("UserID.txt", FileMode.Open);
+            StreamReader fileStreamReader = new StreamReader(file);            
+            string userID = fileStreamReader.ReadLine();
+            string userPass = fileStreamReader.ReadLine();
+            UnityEngine.Debug.Log(userID);
+            UnityEngine.Debug.Log(userPass);
+            //
+
+            AuthenticationRequest request = AuthenticationRequest.Factory.Create(userID, userPass);
             var option = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase

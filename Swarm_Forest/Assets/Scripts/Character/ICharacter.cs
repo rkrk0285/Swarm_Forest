@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class ICharacter: MonoBehaviour{
-    public int ID{get; set;}
+    public int ID;
     public int Type { get; set; }
     public GameObject Prefab;
     
