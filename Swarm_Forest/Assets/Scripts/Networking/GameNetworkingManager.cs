@@ -23,7 +23,10 @@ class GameNetworkingManager: MonoBehaviour{
 
     private void Awake(){
         LoadSessionState();
-        InitializePacketHandlers();
+        InitializePacketHandlers();        
+    }
+    private void Start()
+    {
         InitializeSession();
     }
     void OnDestroy()

@@ -43,7 +43,7 @@ public class MapGenerator : MonoBehaviour
         for(int z = 0; z < N; ++z){
             for(int x = 0; x < N; ++x){
                 var currentTile = map[z][x];
-                Debug.Log($"z: {z}, x: {x}, val: {currentTile}");
+                //Debug.Log($"z: {z}, x: {x}, val: {currentTile}");
 
                 if(currentTile == TileInfo.None) continue;
 

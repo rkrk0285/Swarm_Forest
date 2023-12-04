@@ -51,7 +51,7 @@ public class MatchmakingManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InitializeSession();
+        InitializeSession();        
     }
 
     void Update(){

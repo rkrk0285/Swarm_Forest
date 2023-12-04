@@ -7,11 +7,9 @@ public class InputManager : MonoBehaviour
 {    
     public GameObject Player;    
     public GameObject gameNetworkingManager;    
-    
-    private PlayerManager playerManager;
+    public PlayerManager playerManager;
     private void Start()
-    {
-        playerManager = Player.GetComponent<PlayerManager>();
+    {        
         InitializeNetworkHandler();
     }
     //
@@ -40,11 +38,14 @@ public class InputManager : MonoBehaviour
         gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObjectEventHandler += MoveObjectHandler;
 
         // FOR DEBUG
-        gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObject(0, 100, new UnityEngine.Vector3(0, 0, 0));
+        //gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObject(0, 100, new UnityEngine.Vector3(0, 0, 0));
     }
     
     void MoveObjectHandler(object sender, MoveObject moveObjectPacket)
     {
+        if (playerManager.ID != moveObjectPacket.ObjectId)
+            return;
+
         DoMove = true;
         nextPosition = moveObjectPacket.Position.ToUnityVector3();
     }
@@ -57,8 +58,8 @@ public class InputManager : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             if (Physics.Raycast(ray, out hit))
-            {                
-                gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObject(0, hit.point);
+            {
+                gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObject(playerManager.ID, hit.point);
             }
         }
 
