@@ -32,5 +32,15 @@ public class Missile : Skill
             if (other.gameObject.GetComponent<ICharacter>().Damaged(BaseDamage, ID))
                 Destroy(this.gameObject);
         }
-    }    
+    }
+
+    private float timer = 0.0f;
+    private void Update()
+    {
+        if (timer > LifeTime)
+        {
+            Destroy(this.gameObject);
+        }
+        timer += Time.deltaTime;
+    }
 }

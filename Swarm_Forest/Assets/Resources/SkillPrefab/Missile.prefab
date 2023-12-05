@@ -119,11 +119,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be847e872daa38c4e9ede22e060a9a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 4
+  Type: 104
   BaseDamage: 10
   PercentDamage: 1.15
   LifeTime: 5
   Cooldown: 5
+  HealthPoint: 1
+  gameNetworkingManager: {fileID: 0}
 --- !u!54 &386243757535742284
 Rigidbody:
   m_ObjectHideFlags: 0

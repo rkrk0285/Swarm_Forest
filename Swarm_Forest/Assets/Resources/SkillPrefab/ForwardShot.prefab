@@ -346,8 +346,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ee45da71b83d924ebce5c971374e723, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 5
+  Type: 105
   BaseDamage: 10
   PercentDamage: 1.1
   LifeTime: 5
   Cooldown: 5
+  HealthPoint: 1
+  gameNetworkingManager: {fileID: 0}

@@ -36,9 +36,6 @@ public class InputManager : MonoBehaviour
     void InitializeNetworkHandler()
     {
         gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObjectEventHandler += MoveObjectHandler;
-
-        // FOR DEBUG
-        //gameNetworkingManager.GetComponent<GameNetworkingManager>().InstantiateObject(0, 100, new UnityEngine.Vector3(0, 0, 0));
     }
     
     void MoveObjectHandler(object sender, MoveObject moveObjectPacket)
@@ -55,8 +52,8 @@ public class InputManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Input.GetMouseButton(1))
-        {
+        if (Input.GetMouseButtonDown(1))
+        {            
             if (Physics.Raycast(ray, out hit))
             {
                 gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObject(playerManager.ID, hit.point);
@@ -65,22 +62,22 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            add_Skill(KeyCode.Q, 0);
+            add_Skill(KeyCode.Q, 100);
             GameManager.instance.skillManager.Cast(playerManager, playerManager.Skills[KeyCode.Q], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
-            add_Skill(KeyCode.W, 1);
+            add_Skill(KeyCode.W, 101);
             GameManager.instance.skillManager.Cast(playerManager, playerManager.Skills[KeyCode.W], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            add_Skill(KeyCode.E, 2);
+            add_Skill(KeyCode.E, 102);
             GameManager.instance.skillManager.Cast(playerManager, playerManager.Skills[KeyCode.E], NormalizeRayPoint(MousePositionOnMap()));
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            add_Skill(KeyCode.R, 3);
+            add_Skill(KeyCode.R, 103);
             GameManager.instance.skillManager.Cast(playerManager, playerManager.Skills[KeyCode.R], NormalizeRayPoint(MousePositionOnMap()));
         }
     }
@@ -90,7 +87,7 @@ public class InputManager : MonoBehaviour
     private UnityEngine.Vector3 NormalizeRayPoint(UnityEngine.Vector3 rayPoint)
     {
         var direction = rayPoint - Player.transform.position;
-        direction.y = 1f;
+        direction.y = 0f;
         direction = direction.normalized;
 
         return direction;
@@ -104,7 +101,6 @@ public class InputManager : MonoBehaviour
         {
             return raycastHit.point;
         }
-
         return UnityEngine.Vector3.zero;
     }
     #endregion

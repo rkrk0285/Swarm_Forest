@@ -30,4 +30,14 @@ public class ForwardShot : Skill
                 Destroy(this.gameObject);
         }
     }
+
+    private float timer = 0.0f;
+    private void Update()
+    {
+        if (timer > LifeTime)
+        {
+            Destroy(this.gameObject);
+        }
+        timer += Time.deltaTime;
+    }
 }

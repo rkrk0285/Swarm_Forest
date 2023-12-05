@@ -5,13 +5,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public class Skill: MonoBehaviour{
-        
-    public int ID;    
+
+    public int CasterId;
+    public int ID;
+    public int Type;
     public int BaseDamage;    
     public float PercentDamage;    
     public float LifeTime;    
-    public float Cooldown;    
-    public Action Action;
+    public float Cooldown;
+    public float HealthPoint;
+    public Action Action;    
+    public GameObject gameNetworkingManager;
+    public bool isActivated = false;
 
     public virtual void Activate(ICharacter caster, GameObject Effect, Vector3 direction)
     {

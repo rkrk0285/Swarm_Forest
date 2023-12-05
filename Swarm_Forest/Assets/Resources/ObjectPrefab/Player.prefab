@@ -615,7 +615,7 @@ GameObject:
   - component: {fileID: 5090573759530313529}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -670,10 +670,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67de3d87cef8527418fc7d4e452f7b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 0
   Prefab: {fileID: 1732748715724134449}
+  gameNetworkingManager: {fileID: 0}
   Ani: {fileID: 4097369665458278138}
-  HP_Slider: {fileID: 0}
-  CenterUI: {fileID: 0}
   SkillIcon:
   - {fileID: 21300000, guid: 4867db53aa592a64a851c36645423699, type: 3}
   - {fileID: 21300000, guid: f86e2e3030ac3114390a64871088e4cc, type: 3}

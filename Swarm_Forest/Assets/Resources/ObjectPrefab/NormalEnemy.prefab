@@ -858,7 +858,7 @@ GameObject:
   - component: {fileID: 4831243865638550380}
   m_Layer: 0
   m_Name: NormalEnemy
-  m_TagString: Enemy
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -947,7 +947,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d8b81b89e4556f47984a27d58ff6d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 0
   Prefab: {fileID: 100048}
+  gameNetworkingManager: {fileID: 0}
   Ani: {fileID: 9500000}
 --- !u!136 &4831243865638550380
 CapsuleCollider:

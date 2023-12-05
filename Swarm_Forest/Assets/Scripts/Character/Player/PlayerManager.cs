@@ -33,10 +33,10 @@ public class PlayerManager : ICharacter
     private void Update()
     {
         if (autoMove)
-        {            
-            transform.position = destination;
-            this.gameObject.transform.rotation = Quaternion.Euler(destination - this.gameObject.transform.position);
-            player_Camera.transform.position = new Vector3(transform.position.x, 120, transform.position.z) - offset;
+        {
+            this.gameObject.transform.rotation = Quaternion.LookRotation(destination - new Vector3(this.gameObject.transform.position.x, 0, this.gameObject.transform.position.z));
+            transform.position = destination;            
+            player_Camera.transform.position = new Vector3(transform.position.x, 120, transform.position.z) - offset;            
             autoMove = false;
         }        
     }
