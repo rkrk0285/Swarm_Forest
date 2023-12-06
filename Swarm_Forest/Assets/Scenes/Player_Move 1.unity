@@ -882,6 +882,8 @@ MonoBehaviour:
   parent_Transform: {fileID: 1798542333}
   current_PlayerID: 0
   current_PlayerType: 0
+  NormalEnemy: {fileID: 100048, guid: aef88fbee6805624f81f72c223a6affd, type: 3}
+  normal_Transform: {fileID: 1523866432}
 --- !u!1 &1141374205
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,6 +1062,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1418195486}
   m_CullTransparentMesh: 1
+--- !u!1 &1523866431
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1523866432}
+  m_Layer: 0
+  m_Name: NormalEnemySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1523866432
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523866431}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1527914826
 GameObject:
   m_ObjectHideFlags: 0
@@ -1696,6 +1729,7 @@ SceneRoots:
   - {fileID: 2108231898}
   - {fileID: 1030603391}
   - {fileID: 1141374209}
+  - {fileID: 1523866432}
   - {fileID: 1798542333}
   - {fileID: 1096549297}
   - {fileID: 816083462}

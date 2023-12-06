@@ -6,41 +6,62 @@ public class Missile : Skill
 {        
     private ICharacter caster;
     private Vector3 direction;
-    
+    bool isTriggered = false;
+
     public override void Activate(ICharacter caster, GameObject Effect, Vector3 direction)
     {
         this.caster = caster;
-        this.direction = direction;
-        
-        var effect = InstantiateEffect(Effect, caster.transform.position);
-        effect.GetComponent<Rigidbody>().AddForce(direction * 100f, ForceMode.Impulse);        
+        this.direction = direction;                
+
+        gameNetworkingManager = GameObject.Find("GameManager");
+        int casterId = gameNetworkingManager.GetComponent<ObjectManager>().current_PlayerID;
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().CastSkill(casterId, Type, 1, caster.transform.position, caster.transform.position + direction * 1000);
 
         Invoke("ActivateSecond", 0.5f);
     }    
 
     public void ActivateSecond()
     {
-        var effect2 = InstantiateEffect(this.gameObject, caster.transform.position);
-        effect2.GetComponent<Rigidbody>().AddForce(direction * 100f, ForceMode.Impulse);        
+        gameNetworkingManager = GameObject.Find("GameManager");
+        int casterId = gameNetworkingManager.GetComponent<ObjectManager>().current_PlayerID;
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().CastSkill(casterId, Type, 1, caster.transform.position, caster.transform.position + direction * 1000);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Enemy")
+        if (gameNetworkingManager == null)
+            gameNetworkingManager = GameObject.Find("GameManager");
+
+        if (isTriggered == true)
+            return;
+
+        // 캐릭터이고 본인 캐릭터가 아닌 경우.
+        if (other.gameObject.tag == "Character" && other.gameObject.GetComponent<ICharacter>().ID != CasterId)
         {
-            // 데미지 계산하는 곳.
+            // 데미지 계산하는 곳.            
             if (other.gameObject.GetComponent<ICharacter>().Damaged(BaseDamage, ID))
-                Destroy(this.gameObject);
+            {
+                isTriggered = true;
+                gameNetworkingManager.GetComponent<GameNetworkingManager>().UpdateObjectStatus(ID, 0);
+            }
         }
     }
 
     private float timer = 0.0f;
     private void Update()
     {
-        if (timer > LifeTime)
+        if (isActivated == true)
         {
-            Destroy(this.gameObject);
+            if (timer > LifeTime)
+            {
+                if (CasterId == gameNetworkingManager.GetComponent<ObjectManager>().current_PlayerID)
+                {
+                    gameNetworkingManager.GetComponent<GameNetworkingManager>().UpdateObjectStatus(ID, -1);
+                    isActivated = false;
+                }
+                Destroy(this.gameObject);
+            }
+            timer += Time.deltaTime;
         }
-        timer += Time.deltaTime;
     }
 }

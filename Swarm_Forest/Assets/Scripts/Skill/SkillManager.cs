@@ -21,19 +21,19 @@ public class SkillManager: MonoBehaviour{
     }
 
     private bool CanCastSkill(Skill skill){
-        if(!LastCastedTimes.ContainsKey(skill.ID)){
-            LastCastedTimes.Add(skill.ID, -1);
+        if(!LastCastedTimes.ContainsKey(skill.Type)){
+            LastCastedTimes.Add(skill.Type, -1);
         }
 
         var currentTime = Time.time;
-        var lastCastedTime = LastCastedTimes[skill.ID];
+        var lastCastedTime = LastCastedTimes[skill.Type];
 
         if(lastCastedTime != -1 && currentTime - lastCastedTime < skill.Cooldown)
         {
             return false;
         }
 
-        LastCastedTimes[skill.ID] = currentTime;
+        LastCastedTimes[skill.Type] = currentTime;
         return true;
     }
 

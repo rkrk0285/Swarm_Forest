@@ -59,18 +59,18 @@ public abstract class ICharacter: MonoBehaviour{
         return true;
     }
 
-    private bool CanHit(int ID)
+    private bool CanHit(int type)
     {
-        if (!LastHitTimes.ContainsKey(ID))
-            LastHitTimes.Add(ID, -1);
+        if (!LastHitTimes.ContainsKey(type))
+            LastHitTimes.Add(type, -1);
 
         var currentTime = Time.time;
-        var lastHitTime = LastHitTimes[ID];
+        var lastHitTime = LastHitTimes[type];
 
         if (lastHitTime != -1 && currentTime - lastHitTime < 0.3f)
             return false;
 
-        LastHitTimes[ID] = currentTime;
+        LastHitTimes[type] = currentTime;
         return true;
     }
 

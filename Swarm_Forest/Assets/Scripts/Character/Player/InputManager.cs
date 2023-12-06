@@ -4,25 +4,19 @@ using Google.Protobuf.GameProtocol;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
-{    
-    public GameObject Player;    
-    public GameObject gameNetworkingManager;    
+{
+    public GameObject Player;
+    public GameObject gameNetworkingManager;
     public PlayerManager playerManager;
     private void Start()
-    {        
+    {
         InitializeNetworkHandler();
     }
     //
 
     void Update()
     {
-        input_Control();
-        MovePlayerObejct();
-    }
-
-    // Run in Main Thread Only
-    void MovePlayerObejct()
-    {
+        input_Control();     
         if (DoMove)
         {
             Player.GetComponent<PlayerManager>().movePlayer(nextPosition);
@@ -37,7 +31,7 @@ public class InputManager : MonoBehaviour
     {
         gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObjectEventHandler += MoveObjectHandler;
     }
-    
+
     void MoveObjectHandler(object sender, MoveObject moveObjectPacket)
     {
         if (playerManager.ID != moveObjectPacket.ObjectId)
@@ -53,33 +47,20 @@ public class InputManager : MonoBehaviour
         RaycastHit hit;
 
         if (Input.GetMouseButtonDown(1))
-        {            
+        {
             if (Physics.Raycast(ray, out hit))
             {
                 gameNetworkingManager.GetComponent<GameNetworkingManager>().MoveObject(playerManager.ID, hit.point);
             }
-        }
-
+        }        
         if (Input.GetKeyDown(KeyCode.Q))
-        {
-            add_Skill(KeyCode.Q, 100);
             GameManager.instance.skillManager.Cast(playerManager, playerManager.Skills[KeyCode.Q], NormalizeRayPoint(MousePositionOnMap()));
-        }
         if (Input.GetKeyDown(KeyCode.W))
-        {
-            add_Skill(KeyCode.W, 101);
             GameManager.instance.skillManager.Cast(playerManager, playerManager.Skills[KeyCode.W], NormalizeRayPoint(MousePositionOnMap()));
-        }
         if (Input.GetKeyDown(KeyCode.E))
-        {
-            add_Skill(KeyCode.E, 102);
             GameManager.instance.skillManager.Cast(playerManager, playerManager.Skills[KeyCode.E], NormalizeRayPoint(MousePositionOnMap()));
-        }
         if (Input.GetKeyDown(KeyCode.R))
-        {
-            add_Skill(KeyCode.R, 103);
             GameManager.instance.skillManager.Cast(playerManager, playerManager.Skills[KeyCode.R], NormalizeRayPoint(MousePositionOnMap()));
-        }
     }
 
     #region Raycasting
@@ -103,12 +84,5 @@ public class InputManager : MonoBehaviour
         }
         return UnityEngine.Vector3.zero;
     }
-    #endregion
-
-    // 임시
-    public void add_Skill(KeyCode keyCode, int num)
-    {
-        playerManager.AddSkill(keyCode, num);
-        //playerManager.switchSkillUI(keyCode, num);
-    }
+    #endregion    
 }

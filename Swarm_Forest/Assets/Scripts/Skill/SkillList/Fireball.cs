@@ -10,7 +10,7 @@ public class Fireball : Skill
     {
         gameNetworkingManager = GameObject.Find("GameManager");
         int casterId = gameNetworkingManager.GetComponent<ObjectManager>().current_PlayerID;
-        gameNetworkingManager.GetComponent<GameNetworkingManager>().CastSkill(casterId, 100, 1, caster.transform.position, caster.transform.position + direction * 300);
+        gameNetworkingManager.GetComponent<GameNetworkingManager>().CastSkill(casterId, Type, 1, caster.transform.position, caster.transform.position + direction * 1000);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -39,9 +39,13 @@ public class Fireball : Skill
         if (isActivated == true)
         {            
             if (timer > LifeTime)
-            {                                
-                gameNetworkingManager.GetComponent<GameNetworkingManager>().UpdateObjectStatus(ID, -1);
-                isActivated = false;
+            {
+                if (CasterId == gameNetworkingManager.GetComponent<ObjectManager>().current_PlayerID)
+                {
+                    gameNetworkingManager.GetComponent<GameNetworkingManager>().UpdateObjectStatus(ID, -1);
+                    isActivated = false;
+                }
+                Destroy(this.gameObject);
             }
             timer += Time.deltaTime;
         }

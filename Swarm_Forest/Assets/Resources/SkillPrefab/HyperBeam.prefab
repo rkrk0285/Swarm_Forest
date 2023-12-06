@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4363000815121756}
   - component: {fileID: 198124144702787664}
   - component: {fileID: 199092248008267778}
-  - component: {fileID: 8394759344122181278}
   - component: {fileID: 9205115551341264728}
   - component: {fileID: 2935563882569637539}
+  - component: {fileID: 8885795357369754243}
   m_Layer: 0
   m_Name: HyperBeam
   m_TagString: Untagged
@@ -4846,25 +4846,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &8394759344122181278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1533138625715334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d825916b08e2c65439d4124a5823e5e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 103
-  BaseDamage: 3
-  PercentDamage: 1.1
-  LifeTime: 3
-  Cooldown: 10
-  HealthPoint: 1
-  gameNetworkingManager: {fileID: 0}
 --- !u!65 &9205115551341264728
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4913,6 +4894,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &8885795357369754243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533138625715334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d825916b08e2c65439d4124a5823e5e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CasterId: 0
+  ID: 0
+  Type: 104
+  BaseDamage: 3
+  PercentDamage: 1.15
+  LifeTime: 3
+  Cooldown: 5
+  HealthPoint: 1
+  gameNetworkingManager: {fileID: 0}
+  isActivated: 0
 --- !u!1 &1824827258223664
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HyperBeam : Skill
 {
+    bool isTriggered = false;
     private GameObject effect;    
     private void Update()
     {
@@ -17,7 +18,7 @@ public class HyperBeam : Skill
 
     private void OnTriggerStay(Collider other)
     {        
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.tag == "Character" && other.gameObject.GetComponent<ICharacter>().ID != CasterId)
         {
             // 데미지 계산하는 곳.                        
             other.gameObject.GetComponent<ICharacter>().Damaged(BaseDamage, ID);

@@ -110,6 +110,18 @@ class GameNetworkingManager: MonoBehaviour{
         });
     }
 
+    public void InstantiateObject(int casterId, int ObjectType, int HP, UnityEngine.Vector3 Position)
+    {
+        session.Send(new InstantiateObject()
+        {
+            ObjectId = -1,
+            CasterId = casterId,
+            ObjectType = ObjectType,
+            HP = HP,
+            Position = Position.ToPacketVector3()
+        });
+    }
+
     public void CastSkill(int CasterId, int ObjectType, int HP, UnityEngine.Vector3 Position, UnityEngine.Vector3 Target)
     {
         session.Send(new CastSkill()

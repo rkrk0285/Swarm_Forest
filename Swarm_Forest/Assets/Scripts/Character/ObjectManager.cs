@@ -14,21 +14,23 @@ public class ObjectManager : MonoBehaviour
         {9, "ObjectPrefab/Player" },
         {10, "ObjectPrefab/NormalEnemy" },
         {100, "SkillPrefab/FireBall"},
-        {101, "SkillPrefab/ThrowingStar"},
-        {102, "SkillPrefab/StickyBomb"},
-        {103, "SkillPrefab/HyperBeam"},
-        {104, "SkillPrefab/Missile"},
-        {105, "SkillPrefab/ForwardShot"},
+        {101, "SkillPrefab/ThrowingStar"},        
+        {102, "SkillPrefab/Missile"},
+        {103, "SkillPrefab/ForwardShot"},
+        {104, "SkillPrefab/HyperBeam"},
     };
 
     public GameObject gameNetworkingManagerObject;
     GameNetworkingManager gameNetworkingManager;
     public Transform parent_Transform;
-    private float spawn_Interval = 100f; // For Debug.
-    private float spawn_Timer = 0f;
+    private float spawn_Interval = 50f; // For Debug.
+    private float spawn_Timer = 45f;
     public int current_PlayerID;
     public int current_PlayerType;
+    public GameObject NormalEnemy;
+    public Transform normal_Transform;
 
+    
     private void Start()
     {
         gameNetworkingManager = gameNetworkingManagerObject.GetComponent<GameNetworkingManager>();
@@ -50,12 +52,14 @@ public class ObjectManager : MonoBehaviour
         {
             var info = nextInstantiateObjects.Dequeue();
             GameObject obj = Get(info.ObjectType);
+
+            UnityEngine.Vector3 spawnPos = info.Position.ToUnityVector3();
+            GameObject clone = Instantiate(obj, spawnPos, Quaternion.identity, parent_Transform);
+
             // 캐릭터의 경우.
             Debug.Log(info.ObjectType);
-            if (info.ObjectType < 100)
-            {
-                UnityEngine.Vector3 spawnPos = info.Position.ToUnityVector3();
-                GameObject clone = Instantiate(obj, spawnPos, Quaternion.identity, parent_Transform);
+            if (info.ObjectType < 10)
+            {            
                 clone.GetComponent<ICharacter>().ID = info.ObjectId;
                 clone.GetComponent<ICharacter>().HealthPoint = info.HP;
 
@@ -64,18 +68,24 @@ public class ObjectManager : MonoBehaviour
                 {
                     current_PlayerID = info.ObjectId;
                 }
+            }                       
+            else if (info.ObjectType == 10)
+            {                                            
+                clone.GetComponent<ICharacter>().ID = info.ObjectId;
+                clone.GetComponent<ICharacter>().HealthPoint = info.HP;
+                clone.GetComponent<NormalEnemy>().ChaseObjectID = info.CasterId;
+                clone.GetComponent<NormalEnemy>().ChaseObject = FindObject(info.CasterId);
             }
             // 스킬의 경우.
             else
-            {
-                UnityEngine.Vector3 spawnPos = info.Position.ToUnityVector3();
-                GameObject clone = Instantiate(obj, spawnPos, Quaternion.identity, parent_Transform);
+            {                
                 Skill skill = clone.GetComponent<Skill>();
                 skill.ID = info.ObjectId;
                 skill.HealthPoint = info.HP;
                 skill.isActivated = true;
                 skill.CasterId = info.CasterId;                                
             }
+            currentObjects.Add(info.ObjectId, clone);
         }
 
         while (nextUpdateObjects.Count != 0)
@@ -97,21 +107,20 @@ public class ObjectManager : MonoBehaviour
             var info = nextDeadObjects.Dequeue();
             var objectToDelete = FindObject(info.ObjectId);
 
-            if (objectToDelete == null)
-            {
-                nextDeadObjects.Enqueue(info);
-                if (nextDeadObjects.Count == 1)
-                    break;
-                continue;
-            }
+            if (objectToDelete == null)                            
+                continue;            
 
+            currentObjects.Remove(info.ObjectId);
             Destroy(objectToDelete);
         }
-
+        
         while (nextMoveObjects.Count != 0)
         {
             var info = nextMoveObjects.Dequeue();
             GameObject obj = FindObject(info.ObjectId);
+
+            if (obj == null)
+                continue;
 
             UnityEngine.Vector3 destination = new UnityEngine.Vector3(info.Position.ToUnityVector3().x, 0, info.Position.ToUnityVector3().z);
             UnityEngine.Vector3 obj_currrentPos = new UnityEngine.Vector3(obj.transform.position.x, 0, obj.transform.position.z);
@@ -188,41 +197,24 @@ public class ObjectManager : MonoBehaviour
 
     void Send_NormalSpawnRequest(int Type)
     {
-        // 일반 적 4마리씩 소환
+        // 일반 적 2마리씩 소환
         float z = Random.Range(100, 900);
-        float[] dx = new float[4] { 970, 30, z, z };
-        float[] dz = new float[4] { z, z, 970, 30 };
+        float[] dx = new float[2] { 970, 30};        
 
         int hp = Get(Type).GetComponent<ICharacter>().HealthPoint;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 2; i++)
         {
-            // 요청 발송.
-            Send_SpawnRequest(Type, hp, new UnityEngine.Vector3(dx[i], 0, dz[i]));
+            // 요청 발송.            
+            gameNetworkingManager.InstantiateObject(current_PlayerID, Type, hp, new UnityEngine.Vector3(dx[i], 0, z));
         }
     }
 
-    void Send_SpawnRequest(int Type, int HP, UnityEngine.Vector3 Pos)
-    {
-        // 소환 요청.
-        gameNetworkingManager.InstantiateObject(Type, HP, Pos);
-    }
-
+    private Dictionary<int, GameObject> currentObjects = new Dictionary<int, GameObject>();
     public GameObject FindObject(int FindID)
-    {
-        for (int i = 0; i < parent_Transform.childCount; i++)
-        {
-            if (parent_Transform.GetChild(i).TryGetComponent<ICharacter>(out var icharacter))
-            {
-                if (parent_Transform.GetChild(i).GetComponent<ICharacter>().ID == FindID)
-                    return parent_Transform.GetChild(i).gameObject;
-            }
-            else if (parent_Transform.GetChild(i).TryGetComponent<Skill>(out var skill))
-            {
-                if (parent_Transform.GetChild(i).GetComponent<Skill>().ID == FindID)
-                    return parent_Transform.GetChild(i).gameObject;
-            }
-        }
-        return null;
+    {        
+        if (!currentObjects.ContainsKey(FindID))
+            return null;
+        return currentObjects[FindID];
     }
     public static GameObject Get(int Type)
     {
